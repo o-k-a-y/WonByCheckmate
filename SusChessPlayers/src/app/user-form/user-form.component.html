@@ -1,0 +1,10 @@
+<form #playerForm="ngForm" class="d-flex" (ngSubmit)="formSubmitted(playerForm.value)" autocomplete="off">
+    <!-- mr-2 is right justified -->
+    <input
+        name="username"
+        [(ngModel)]="username" 
+        class="form-control mr-2"
+        type="search" 
+        placeholder="Username">
+    <button class="btn btn-outline-success" type="submit">Check</button>
+  </form>

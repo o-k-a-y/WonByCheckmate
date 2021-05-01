@@ -1,0 +1,22 @@
+
+<p>
+  Try not to spam the requests as the server may rate limit you and you may get inaccurate results (only some games will be parsed if any)
+</p>
+
+<app-user-form (onSubmitForm)="fetchPlayerStats($event)"></app-user-form>
+
+<p *ngIf="httpError">
+  Some http request failed (probably rate limited)
+</p>
+
+<p *ngIf="doneParsing && stats!=null">
+  done
+  <br>
+  <!-- <li > -->
+    <!-- {{key}} -->
+    <app-game-configuration [name]=key [results]="stats.stats[key]" *ngFor="let key of configurations"></app-game-configuration>
+  <!-- </li> -->
+  
+</p>
+
+
