@@ -6,14 +6,16 @@ import { AppComponent } from './app.component';
 import { FormsModule } from '@angular/forms';
 import { GameConfigurationComponent } from './game-configuration/game-configuration.component';
 import { UserFormComponent } from './user-form/user-form.component';
-import { TableComponent } from './table/table.component';
+import { TableComponent } from './tables/table/table.component';
+import { TablesComponent } from './tables/tables.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     GameConfigurationComponent,
     UserFormComponent,
-    TableComponent
+    TableComponent,
+    TablesComponent
   ],
   imports: [
     BrowserModule,

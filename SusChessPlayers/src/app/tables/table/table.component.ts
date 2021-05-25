@@ -6,18 +6,12 @@ import { Component, Input, OnInit } from '@angular/core';
   styleUrls: ['./table.component.scss']
 })
 export class TableComponent implements OnInit {
-  @Input() data;
+  @Input() tableRows: string[] = [];
+  @Input() tableCols: string[] = [];
+  @Input() data: any = {};
 
-  tableRows;
-  tableCols;
   constructor() { }
 
   ngOnInit(): void {
-    this.tableRows = Object.keys(this.data);
-    this.tableCols = Object.keys(this.data[this.tableRows[0]]); // terrible
-    console.log(this.tableRows);
-    console.log(this.tableCols);
-    console.log(this.data);
   }
-
 }
