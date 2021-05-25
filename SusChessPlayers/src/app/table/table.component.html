@@ -1,1 +1,19 @@
-<p>table works!</p>
+<table class="table table-striped table-bordered table-hover">
+    <thead>
+        <tr>
+            <!-- Empty cell -->
+            <th scope="col"></th>
+            <th class="table-primary" scope="col" *ngFor="let tableCol of tableCols">
+                {{tableCol}}
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let tableRow of tableRows">
+            <th class="table-info" scope="row" >{{tableRow}}</th>
+            <td *ngFor="let tableCol of tableCols">
+                {{data[tableRow][tableCol]}}
+            </td>
+        </tr>    
+    </tbody>
+</table>

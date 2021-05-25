@@ -9,14 +9,17 @@
   Some http request failed (probably rate limited)
 </p>
 
+<!-- Refactor -->
 <p *ngIf="doneParsing && stats!=null">
-  done
   <br>
-  <!-- <li > -->
-    <!-- {{key}} -->
-    <app-game-configuration [name]=key [results]="stats.stats[key]" *ngFor="let key of configurations"></app-game-configuration>
-  <!-- </li> -->
-  
+    <app-table [data]="stats.stats"></app-table>
 </p>
 
+
+<!-- Remove or refactor -->
+<!-- <p *ngIf="doneParsing && stats!=null">
+  <br>
+    <app-game-configuration [name]=key [results]="stats.stats[key]" *ngFor="let key of configurations"></app-game-configuration>
+</p>
+ -->
 
