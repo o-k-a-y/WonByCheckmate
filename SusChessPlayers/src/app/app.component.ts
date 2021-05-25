@@ -24,6 +24,7 @@ export class AppComponent {
 
 
   fetchPlayerStats(username: string) {
+    this.httpError = false;
     this.doneParsing = false;
 
     console.log(username);
