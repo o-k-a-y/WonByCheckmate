@@ -11,9 +11,11 @@ namespace API.Services {
         HttpClient _client;
         private const string baseUrl = "https://api.chess.com/pub/player/";
         private const string content = "/games/archives";
-        // TODO
         private string username;
         private string endpoint;
+
+        private DateTime time;
+        private int milliseconds = 0;
 
 
         // All known configurations we care about (double check to make sure none are missing)
@@ -218,6 +220,7 @@ namespace API.Services {
 
 
         public ChessStatsService(IHttpClientFactory httpFactory) {
+            time = DateTime.Now;
             _client = httpFactory.CreateClient();
 
             gameConfigurationStats = new GameConfigurationStats(validGameConfigurations);
@@ -288,8 +291,11 @@ namespace API.Services {
         // All the games from a single archive (normally within a 1 month period)
         // TODO: Find a way to separate the results from each type of game played (rapid, etc)
         private void ParseGameArchive(JArray gamesFromSingleArchive) {
+            DateTime time = DateTime.Now;
+
             // Debug.WriteLine("test");
             foreach (var game in gamesFromSingleArchive) {
+                
                 string rules = game.Value<string>("rules");
                 string timeControl = game.Value<string>("time_control");
                 string timeClass = game.Value<string>("time_class");
@@ -362,6 +368,9 @@ namespace API.Services {
                         break;
                 }
             }
+
+            milliseconds += DateTime.Now.Millisecond - time.Millisecond;
+            Console.WriteLine(milliseconds);
         }
     }
 }
