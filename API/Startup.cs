@@ -28,9 +28,21 @@ namespace API {
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services) {
 
-            services.AddDbContext<DataContext>(options => {
-                options.UseSqlite(_config.GetConnectionString("DefaultConnection"));
-            });
+            // services.AddDbContext<DataContext>(options => {
+            //     options.UseSqlite(_config.GetConnectionString("DefaultConnection"));
+            // });
+
+            
+            var serverVersion = new MariaDbServerVersion(new Version(10, 5, 0));
+
+            // Replace 'YourDbContext' with the name of your own DbContext derived class.
+            services.AddDbContext<DataContext>(
+                dbContextOptions => dbContextOptions
+                    .UseMySql(_config.GetConnectionString("MariaDB"), serverVersion)
+                    .EnableSensitiveDataLogging() // <-- These two calls are optional but help
+                    .EnableDetailedErrors()       // <-- with debugging (remove for production).
+            );
+            services.AddScoped<IChessStatsService, ChessStatsService>();
 
             services.AddControllers()
                 .AddNewtonsoftJson(); // Supports return newtonsoft json objects from controllers
@@ -40,7 +52,6 @@ namespace API {
             //     c.SwaggerDoc("v1", new OpenApiInfo { Title = "API", Version = "v1" });
             // });
 
-            services.AddScoped<IChessStatsService, ChessStatsService>();
             services.AddHttpClient<HttpClient>();
         }
 
