@@ -34,33 +34,17 @@ describe('PlayerStatsService', () => {
 
     it('should get player stats given a username', () => {
         const mockStats: {} = { key: 'value', username: "test" };
-        service.getStats('test').subscribe((stats: {}) => {
-            expect(stats).toEqual(mockStats);
-        });
+        service.getStats('test').subscribe(
+            (stats: {}) => {
+                expect(stats).toEqual(mockStats);
+            },
+            (error: any) => {
+
+            }
+        );
 
         const request = httpMock.expectOne(service.baseUrl + 'test');
         expect(request.request.method).toBe('GET');
         request.flush(mockStats);
     });
-
-    // it('should get player stats given a username',
-    //     inject([HttpTestingController, PlayerStatsService],
-    //         (httpMock: HttpTestingController, playerStatsService: PlayerStatsService) => {
-    //             const mockStats: {} = { key: 'value', username: "test" };
-
-    //             let response = null;
-
-    //             playerStatsService.getStats('test').subscribe(
-    //                 (stats: JSON) => {
-    //                     response = stats;
-    //                 },
-    //                 (error: any) => {
-    //                     //
-    //                 }
-    //             )
-
-    //             expect(response).toEqual(mockStats);
-    //         }
-    //     )
-    // )
 });
