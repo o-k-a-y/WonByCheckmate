@@ -42,7 +42,6 @@ describe('PlayerStatsService', () => {
 
             }
         );
-
         const request = httpMock.expectOne(service.baseUrl + 'test');
         expect(request.request.method).toBe('GET');
         request.flush(mockStats);

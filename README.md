@@ -12,3 +12,12 @@ Chess.com players to avoid because they rage quit by closing the site/app causin
 
 # Frontend
 Angular to display JSON returned from API as a table.
+
+
+# Database
+Mariadb
+
+https://stackoverflow.com/questions/39189451/mariadb-install-in-ubuntu-16-04
+
+- dotnet ef migrations add InitialCreate -o Data/Migrations
+- dotnet ef database update

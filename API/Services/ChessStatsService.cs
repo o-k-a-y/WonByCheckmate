@@ -11,6 +11,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json; // JsonConvert
 using Newtonsoft.Json.Linq; // JObject, JArray
+using API.Extensions;
+using System.Diagnostics;
 
 namespace API.Services {
     public class ChessStatsService : IChessStatsService {
@@ -22,8 +24,6 @@ namespace API.Services {
 
         // The last played game a user played that is stored in the database
         private int lastPlayedGameEpoch;
-        
-
 
         // All known configurations we care about (double check to make sure none are missing)
         // rules:time control:time class
@@ -42,7 +42,7 @@ namespace API.Services {
             // Blitz
             "chess:180:blitz",
             "chess:300:blitz",
-            "chess:480:blitz",
+            "chess:480:blitz", // this one isn't very common, remove maybe
             "chess:600:blitz",
             
             // Rapid
@@ -203,62 +203,86 @@ namespace API.Services {
             
         };
 
-        private GameConfigurationStats gameConfigurationStats;
-
         private readonly DataContext _context;
 
         public ChessStatsService(IHttpClientFactory httpFactory, DataContext context) {
             _context = context;
             _client = httpFactory.CreateClient();
-
-            gameConfigurationStats = new GameConfigurationStats(validGameConfigurations);
-            // username = "test";
-            // endpoint = baseUrl + username + content;
         }
 
         public async Task<ChessStats> GetStats(string username) {
             this.username = username;
             this.endpoint = baseUrl + username + content;
 
-            // Console.WriteLine(this.username);
-            // Console.WriteLine(this.endpoint);
-
+            this.lastPlayedGameEpoch = await GetMostRecentGameEpoch();
             await RetrieveArchives(await GetMostRecentGameDate());
 
-            ChessStats stats = new ChessStats {
-                stats = gameConfigurationStats.AsJson()
-            };
 
-            // foreach (var kv in gameConfigurationStats.stats) {
-            //     Console.WriteLine(kv.Key);
+            Stopwatch stopWatch = new Stopwatch();
+            stopWatch.Start();
 
-            //     foreach (var keyValue in gameConfigurationStats.stats[kv.Key]) {
-            //         Console.WriteLine(keyValue.Value);
-            //     }
+            await _context.SaveChangesAsync();
 
-            // }
+            stopWatch.Stop();
+            // Get the elapsed time as a TimeSpan value.
+            TimeSpan ts = stopWatch.Elapsed;
 
-            // return gameConfigurationStats.AsJson();
+            // Format and display the TimeSpan value.
+            string elapsedTime = String.Format("{0:00}:{1:00}:{2:00}.{3:00}",
+                ts.Hours, ts.Minutes, ts.Seconds,
+                ts.Milliseconds / 10);
+            Console.WriteLine("RunTime " + elapsedTime);
+
+            ChessStats stats = await BuildStatsFromDatabase();
 
             return stats;
         }
 
+
+        // Returns all the games a user has played
         public async Task<IEnumerable<Game>> GetGames(string username) {
             this.username = username;
             this.endpoint = baseUrl + username + content;
-            // TODO: Need to check when the last game for the user was parsed (which month)
+
             // Get the months of data that still need to be parsed and at the minimum the current month
             // Need error handling when attempt to parse a month of games where there were no games played
             // i.e. user played in 10/2020, but not in 11/2020, but then played in 12/2020. 11/2020 should through an error or return empty data?
             // Should be empty array of games if there were none
 
-
-            lastPlayedGameEpoch = await GetMostRecentGameEpoch();
+            // TODO: We assign the epoch time here but GetMostRecentGameDate also calls this method, refactor duplicate call
+            this.lastPlayedGameEpoch = await GetMostRecentGameEpoch();
             // Parse any months of games that weren't parsed yet and update database
             await RetrieveArchives(await GetMostRecentGameDate());
+            await _context.SaveChangesAsync();
+            
             return await _context.Games.ToListAsync();
         }
 
+
+        // TODO: Once tables are separated with User table that contains Game table reference, modify LINQ queries to return updated structure according to schema
+        // TODO: The LINQ queries used are probably not efficient at all
+        private async Task<ChessStats> BuildStatsFromDatabase() {
+
+            ChessStats stats = new ChessStats();
+            stats.stats = new JObject();
+            foreach (string config in validGameConfigurations) {
+                // chess:30:bullet
+                List<string> c = new List<string>(config.Split(':'));
+                string timeClass = c[2];
+                string timeControl = c[1];
+                string rules = c[0];
+                var resultTypes = Enum.GetNames(typeof(GameResultType));
+                stats.stats[config] = new JObject();
+                // int count = 0;
+                foreach (var result in resultTypes) {
+                    // count += await _context.Games.Where(game => game.Username == this.username && game.Result == result && game.TimeClass == timeClass && game.TimeControl == timeControl && game.Rules == rules).CountAsync();
+                    stats.stats[config][result] = await _context.Games.Where(game => game.Username == this.username && game.Result == result && game.TimeClass == timeClass && game.TimeControl == timeControl && game.Rules == rules).CountAsync();
+                }
+                // Console.WriteLine($"Count for {config} = {count}");
+            }
+
+            return stats;
+        }
 
         // Epoch time of most recent game played
         private async Task<int> GetMostRecentGameEpoch() {
@@ -273,7 +297,7 @@ namespace API.Services {
 
         // Most recent game date with just year and month
         private async Task<DateTime> GetMostRecentGameDate() {
-            int mostRecentGameTime =  await GetMostRecentGameEpoch();
+            int mostRecentGameTime = await GetMostRecentGameEpoch();
             DateTimeOffset dateTimeOffset = DateTimeOffset.FromUnixTimeSeconds(mostRecentGameTime);
             DateTime mostRecentGameDate = new DateTime(dateTimeOffset.DateTime.Year, dateTimeOffset.DateTime.Month, 1);
 
@@ -293,14 +317,17 @@ namespace API.Services {
 
             JArray chessArchivesList = chessArchivesJson.Value<JArray>("archives");
 
-            // TODO: Probably more efficient to parse backwards from the list of archives to so we don't needlessly hit endpoints we don't need to
-            foreach (string archive in chessArchivesList) {
+            // The below comment might be misleading because if the games aren't all entirely parsed, there will be issues, don't do it
+            // More efficient to parse backwards from the list of archives to so we don't needlessly hit endpoints we don't need to
+            foreach (string archive in chessArchivesList.FastReverse()) {
+            // foreach (string archive in chessArchivesList) {
                 string dateTime = archive.Split($"{baseUrl}{username}/games/")[1];
                 DateTime archiveDate;
                 DateTime.TryParseExact(dateTime, "yyyy/MM", CultureInfo.InvariantCulture, DateTimeStyles.None, out archiveDate);
 
                 Console.WriteLine($"Current archive date: {archiveDate}");
 
+                // TODO: Maybe can add a break statement to exit if the game isn't >= the most recent game date, but make sure that the order is guaranteed
                 // Only parse archives if we haven't parsed it yet, or it's the most recently played month (user may have played more games in that month since last parsed)
                 if (archiveDate >= mostRecentGameDate) {
                     await RetrieveArchive(archive);
@@ -324,15 +351,13 @@ namespace API.Services {
             await ParseGameArchive(chessArchiveJson.Value<JArray>("games"));
         }
 
-        // All the games from a single archive (normally within a 1 month period)
-        // TODO: Find a way to separate the results from each type of game played (rapid, etc)
+        // Parse all the games from a single archive (games in a single month)
         private async Task ParseGameArchive(JArray gamesFromSingleArchive) {
-            foreach (var game in gamesFromSingleArchive) {
-
+            // Loop backwards from gamesFromSingleArchive to avoid needlessly parsing games we don't need to
+            foreach (var game in gamesFromSingleArchive.FastReverse()) {
                 int endTime = game.Value<int>("end_time");
-                // TODO: Loop backwards from gamesFromSingleArchive to avoid needlessly parsing games we don't need to
-                //      Once the endtime is less than or equal to lastPlayedGameEpoch, we can break and stop processing any more games
-                if (endTime <= lastPlayedGameEpoch) {
+                // TODO: Once the endtime is less than or equal to lastPlayedGameEpoch, we can break and stop processing any more games assuming order is guaranteed
+                if (endTime <= this.lastPlayedGameEpoch) {
                     continue;
                 }
                 string rules = game.Value<string>("rules");
@@ -341,6 +366,7 @@ namespace API.Services {
 
                 string configuration = $"{rules}:{timeControl}:{timeClass}";
 
+                // Only check valid game configurations
                 if (!validGameConfigurations.Contains(configuration)) {
                     continue;
                 }
@@ -354,95 +380,62 @@ namespace API.Services {
                 JObject currentPlayer = currentPlayerIsWhite ? white : black;
                 JObject otherPlayer = currentPlayerIsWhite ? black : white;
 
-
-
-
-
                 string result = "";
                 // TODO: The pgn contains a lot of useful data and this switch statement become invalidated really..
                 switch (currentPlayer.Value<string>("result")) {
                     // Game was a draw, no one won
                     case GameResult.DrawByAgreement:
                         result = nameof(GameResultType.DrawByAgreement);
-
-                        // gameConfigurationStats.stats[configuration][GameResultType.DrawByAgreement]++;
                         break;
-                    case GameResult.DrawByRepitition:
-                        result = nameof(GameResultType.DrawByRepitition);
-
-                        // gameConfigurationStats.stats[configuration][GameResultType.DrawByRepitition]++;
+                    case GameResult.DrawByRepetition:
+                        result = nameof(GameResultType.DrawByRepetition);
                         break;
                     case GameResult.DrawByStalemate:
                         result = nameof(GameResultType.DrawByStalemate);
-
-                        // gameConfigurationStats.stats[configuration][GameResultType.DrawByStalemate]++;
                         break;
                     case GameResult.DrawByInsufficientMaterial:
                         result = nameof(GameResultType.DrawByInsufficientMaterial);
-
-                        // gameConfigurationStats.stats[configuration][GameResultType.DrawByInsufficientMaterial]++;
                         break;
                     case GameResult.DrawByTimeoutVsInsufficientMaterial:
                         result = nameof(GameResultType.DrawByTimeoutVsInsufficientMaterial);
-
-                        // gameConfigurationStats.stats[configuration][GameResultType.DrawByTimeoutVsInsufficientMaterial]++;
                         break;
                     case GameResult.DrawBy50Move:
                         result = nameof(GameResultType.DrawBy50Move);
-
-                        // gameConfigurationStats.stats[configuration][GameResultType.DrawBy50Move]++;
                         break;
                     // We won
                     case GameResult.Win:
                         switch (otherPlayer.Value<string>("result")) {
                             case GameResult.CheckMated:
                                 result = nameof(GameResultType.WonByCheckmate);
-
-                                // gameConfigurationStats.stats[configuration][GameResultType.WonByCheckmate]++;
                                 break;
                             case GameResult.Resigned:
                                 result = nameof(GameResultType.WonByResignation);
-
-                                // gameConfigurationStats.stats[configuration][GameResultType.WonByResignation]++;
                                 break;
-                            case GameResult.Abandonded:
+                            case GameResult.Abandoned:
                                 result = nameof(GameResultType.WonByAbandonment);
-
-                                // gameConfigurationStats.stats[configuration][GameResultType.WonByAbandonment]++;
                                 break;
                             case GameResult.Timeout:
-                                result = nameof(GameResultType.WonOnTime);
-
-                                // gameConfigurationStats.stats[configuration][GameResultType.WonOnTime]++;
+                                result = nameof(GameResultType.WonByTimeout);
                                 break;
                         }
                         break;
                     // Otherwise we lost
                     case GameResult.CheckMated:
                         result = nameof(GameResultType.LostByCheckmate);
-
-                        // gameConfigurationStats.stats[configuration][GameResultType.LostByCheckmate]++;
                         break;
                     case GameResult.Resigned:
                         result = nameof(GameResultType.LostByResignation);
-
-                        // gameConfigurationStats.stats[configuration][GameResultType.LostByResignation]++;
                         break;
-                    case GameResult.Abandonded:
+                    case GameResult.Abandoned:
                         result = nameof(GameResultType.LostByAbandonment);
-
-                        // gameConfigurationStats.stats[configuration][GameResultType.LostByAbandonment]++;
                         break;
                     case GameResult.Timeout:
-                        result = nameof(GameResultType.LostOnTime);
-
-                        // gameConfigurationStats.stats[configuration][GameResultType.LostOnTime]++;
+                        result = nameof(GameResultType.LostByTimeout);
                         break;
                 }
 
-
                 // TODO: There is more useful information within the pgn like opening played etc
-                _context.Games.Add(new Game{
+                _context.Games.Add(new Game {
                     Username = username.ToLower(),
                     Rules = rules,
                     TimeControl = timeControl,
@@ -454,10 +447,9 @@ namespace API.Services {
                     Fen = game.Value<string>("fen"),
                     EndTime = endTime
                 });
-
-                await _context.SaveChangesAsync();
+                // await _context.SaveChangesAsync();
             }
-
+            // await _context.SaveChangesAsync();
         }
     }
 }

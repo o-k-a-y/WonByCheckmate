@@ -32,8 +32,8 @@ export class AppComponent {
     this.playerStatsService.getStats(username).subscribe(
       (stats: JSON) => {
         this.stats = stats;
-        this.doneParsing = true;
         this.configurations = Object.keys(stats['stats']);
+        this.doneParsing = true;
       },
       error => {
         console.log(error);

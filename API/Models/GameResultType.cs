@@ -1,7 +1,7 @@
 namespace API.Models {
     public enum GameResultType {
         WonByResignation = 0,
-        WonOnTime,
+        WonByTimeout,
         WonByCheckmate,
         WonByAbandonment,
         WonByKingOfTheHill,
@@ -9,12 +9,12 @@ namespace API.Models {
         WonByBugHouse,
         DrawByAgreement,
         DrawByStalemate,
-        DrawByRepitition,
+        DrawByRepetition,
         DrawByInsufficientMaterial,
         DrawByTimeoutVsInsufficientMaterial,
         DrawBy50Move,
         LostByResignation,
-        LostOnTime,
+        LostByTimeout,
         LostByCheckmate,
         LostByAbandonment,
         LostByThreeCheck,

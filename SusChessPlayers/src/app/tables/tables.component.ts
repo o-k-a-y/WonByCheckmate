@@ -17,9 +17,12 @@ export class TablesComponent implements OnInit {
 
   ngOnInit(): void {
     this.tableRows = Object.keys(this.data);
+    console.log(`${this.tableRows} are the table rows returned`);
     this.tableCols = Object.keys(this.data[this.tableRows[0]]); // terrible, maybe rewrite returned JSON
-    console.log(this.tableRows);
-    console.log(this.tableCols);
+    console.log(`${this.tableCols} are the table cols returned`);
+
+    // console.log(this.tableRows);
+    // console.log(this.tableCols);
     console.log(this.data);
 
     this.tableCols.forEach(element => {
