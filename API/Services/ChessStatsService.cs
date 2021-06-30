@@ -16,19 +16,15 @@ using System.Diagnostics;
 
 namespace API.Services {
     public class ChessStatsService : IChessStatsService {
-        HttpClient _client;
+        private readonly DataContext _context;
+        private HttpClient _client;
         private const string baseUrl = "https://api.chess.com/pub/player/";
-        private const string content = "/games/archives";
-        private string username;
+        private const string archives = "/games/archives";
         private string endpoint;
-
-        // The last played game a user played that is stored in the database
-        private int lastPlayedGameEpoch;
 
         // All known configurations we care about (double check to make sure none are missing)
         // rules:time control:time class
         // This set is used when a game is being parsed to see if we even want to parse results further
-
         private readonly HashSet<string> validGameConfigurations = new HashSet<string>{
             
             // Bullet
@@ -200,10 +196,8 @@ namespace API.Services {
             [70] [string]:"oddschess:480:blitz"
             [71] [string]:"oddschess:420:blitz"
             */
-            
         };
 
-        private readonly DataContext _context;
 
         public ChessStatsService(IHttpClientFactory httpFactory, DataContext context) {
             _context = context;
@@ -211,57 +205,51 @@ namespace API.Services {
         }
 
         public async Task<ChessStats> GetStats(string username) {
-            this.username = username;
-            this.endpoint = baseUrl + username + content;
+            await UpdateGamesIfNeeded(username);
 
-            this.lastPlayedGameEpoch = await GetMostRecentGameEpoch();
-            await RetrieveArchives(await GetMostRecentGameDate());
-
-
-            Stopwatch stopWatch = new Stopwatch();
-            stopWatch.Start();
-
-            await _context.SaveChangesAsync();
-
-            stopWatch.Stop();
-            // Get the elapsed time as a TimeSpan value.
-            TimeSpan ts = stopWatch.Elapsed;
-
-            // Format and display the TimeSpan value.
-            string elapsedTime = String.Format("{0:00}:{1:00}:{2:00}.{3:00}",
-                ts.Hours, ts.Minutes, ts.Seconds,
-                ts.Milliseconds / 10);
-            Console.WriteLine("RunTime " + elapsedTime);
-
-            ChessStats stats = await BuildStatsFromDatabase();
-
-            return stats;
+            return await BuildStatsFromDatabase(username);
         }
 
 
         // Returns all the games a user has played
         public async Task<IEnumerable<Game>> GetGames(string username) {
-            this.username = username;
-            this.endpoint = baseUrl + username + content;
+            await UpdateGamesIfNeeded(username);
+
+            return await _context.Games.ToListAsync();
+        }
+
+        private async Task UpdateGamesIfNeeded(string username) {
+            // Stopwatch stopWatch = new Stopwatch();
+            // stopWatch.Start();
+
+            this.endpoint = baseUrl + username + archives;
 
             // Get the months of data that still need to be parsed and at the minimum the current month
-            // Need error handling when attempt to parse a month of games where there were no games played
-            // i.e. user played in 10/2020, but not in 11/2020, but then played in 12/2020. 11/2020 should through an error or return empty data?
-            // Should be empty array of games if there were none
+            // Endpoint should be empty array of games if there is a month where there were no games played
+            // i.e. user played in 10/2020, but not in 11/2020, but then played in 12/2020. 11/2020 should through an empty array
+            // We avoid this by only fetching endpoint data where games are returned because that's what https://api.chess.com/pub/player/{username}/games/archives" returns
 
-            // TODO: We assign the epoch time here but GetMostRecentGameDate also calls this method, refactor duplicate call
-            this.lastPlayedGameEpoch = await GetMostRecentGameEpoch();
+            // The last played game a user played that is stored in the database
+            int lastPlayedGameEpoch = await GetMostRecentGameEpoch(username);
             // Parse any months of games that weren't parsed yet and update database
-            await RetrieveArchives(await GetMostRecentGameDate());
+            await RetrieveArchives(username, lastPlayedGameEpoch);
             await _context.SaveChangesAsync();
-            
-            return await _context.Games.ToListAsync();
+
+            // stopWatch.Stop();
+            // // Get the elapsed time as a TimeSpan value.
+            // TimeSpan ts = stopWatch.Elapsed;
+
+            // // Format and display the TimeSpan value.
+            // string elapsedTime = String.Format("{0:00}:{1:00}:{2:00}.{3:00}",
+            //     ts.Hours, ts.Minutes, ts.Seconds,
+            //     ts.Milliseconds / 10);
+            // Console.WriteLine("RunTime " + elapsedTime);
         }
 
 
         // TODO: Once tables are separated with User table that contains Game table reference, modify LINQ queries to return updated structure according to schema
         // TODO: The LINQ queries used are probably not efficient at all
-        private async Task<ChessStats> BuildStatsFromDatabase() {
+        private async Task<ChessStats> BuildStatsFromDatabase(string username) {
 
             ChessStats stats = new ChessStats();
             stats.stats = new JObject();
@@ -276,7 +264,7 @@ namespace API.Services {
                 // int count = 0;
                 foreach (var result in resultTypes) {
                     // count += await _context.Games.Where(game => game.Username == this.username && game.Result == result && game.TimeClass == timeClass && game.TimeControl == timeControl && game.Rules == rules).CountAsync();
-                    stats.stats[config][result] = await _context.Games.Where(game => game.Username == this.username && game.Result == result && game.TimeClass == timeClass && game.TimeControl == timeControl && game.Rules == rules).CountAsync();
+                    stats.stats[config][result] = await _context.Games.Where(game => game.Username == username && game.Result == result && game.TimeClass == timeClass && game.TimeControl == timeControl && game.Rules == rules).CountAsync();
                 }
                 // Console.WriteLine($"Count for {config} = {count}");
             }
@@ -285,7 +273,7 @@ namespace API.Services {
         }
 
         // Epoch time of most recent game played
-        private async Task<int> GetMostRecentGameEpoch() {
+        private async Task<int> GetMostRecentGameEpoch(string username) {
             // Last played game time or 0 if no games exist
             var games = await _context.Games.Where(game => game.Username == username).ToListAsync();
             if (games.Count <= 0) {
@@ -296,15 +284,18 @@ namespace API.Services {
         }
 
         // Most recent game date with just year and month
-        private async Task<DateTime> GetMostRecentGameDate() {
-            int mostRecentGameTime = await GetMostRecentGameEpoch();
-            DateTimeOffset dateTimeOffset = DateTimeOffset.FromUnixTimeSeconds(mostRecentGameTime);
+        // 05/2021
+        private DateTime GetMostRecentGameDate(int epochDate) {
+            // int mostRecentGameTime = await GetMostRecentGameEpoch();
+            DateTimeOffset dateTimeOffset = DateTimeOffset.FromUnixTimeSeconds(epochDate);
             DateTime mostRecentGameDate = new DateTime(dateTimeOffset.DateTime.Year, dateTimeOffset.DateTime.Month, 1);
 
             return mostRecentGameDate;
         }
 
-        private async Task RetrieveArchives(DateTime mostRecentGameDate) {
+        private async Task RetrieveArchives(string username, int lastPlayedGameEpoch) {
+            DateTime mostRecentGameDate = GetMostRecentGameDate(lastPlayedGameEpoch);
+
             // Get the list of archives
             HttpResponseMessage chessArchives = await _client.GetAsync(this.endpoint, HttpCompletionOption.ResponseContentRead);
 
@@ -320,7 +311,7 @@ namespace API.Services {
             // The below comment might be misleading because if the games aren't all entirely parsed, there will be issues, don't do it
             // More efficient to parse backwards from the list of archives to so we don't needlessly hit endpoints we don't need to
             foreach (string archive in chessArchivesList.FastReverse()) {
-            // foreach (string archive in chessArchivesList) {
+                // foreach (string archive in chessArchivesList) {
                 string dateTime = archive.Split($"{baseUrl}{username}/games/")[1];
                 DateTime archiveDate;
                 DateTime.TryParseExact(dateTime, "yyyy/MM", CultureInfo.InvariantCulture, DateTimeStyles.None, out archiveDate);
@@ -330,14 +321,14 @@ namespace API.Services {
                 // TODO: Maybe can add a break statement to exit if the game isn't >= the most recent game date, but make sure that the order is guaranteed
                 // Only parse archives if we haven't parsed it yet, or it's the most recently played month (user may have played more games in that month since last parsed)
                 if (archiveDate >= mostRecentGameDate) {
-                    await RetrieveArchive(archive);
+                    await RetrieveArchive(archive, username, lastPlayedGameEpoch);
                 }
             }
         }
 
 
         // Gets game stats given archives of games (from https://api.chess.com/pub/player/{username}/games/archives)
-        private async Task RetrieveArchive(string archive) {
+        private async Task RetrieveArchive(string archive, string username, int lastPlayedGameEpoch) {
             // Get the games from a single archive
             HttpResponseMessage chessArchive = await _client.GetAsync(archive, HttpCompletionOption.ResponseContentRead);
 
@@ -348,16 +339,16 @@ namespace API.Services {
             // Deserialize so we can extract data from JSON
             JObject chessArchiveJson = JsonConvert.DeserializeObject<JObject>(chessArchiveString);
 
-            await ParseGameArchive(chessArchiveJson.Value<JArray>("games"));
+            await ParseGameArchive(chessArchiveJson.Value<JArray>("games"), username, lastPlayedGameEpoch);
         }
 
         // Parse all the games from a single archive (games in a single month)
-        private async Task ParseGameArchive(JArray gamesFromSingleArchive) {
+        private async Task ParseGameArchive(JArray gamesFromSingleArchive, string username, int lastPlayedGameEpoch) {
             // Loop backwards from gamesFromSingleArchive to avoid needlessly parsing games we don't need to
             foreach (var game in gamesFromSingleArchive.FastReverse()) {
                 int endTime = game.Value<int>("end_time");
                 // TODO: Once the endtime is less than or equal to lastPlayedGameEpoch, we can break and stop processing any more games assuming order is guaranteed
-                if (endTime <= this.lastPlayedGameEpoch) {
+                if (endTime <= lastPlayedGameEpoch) {
                     continue;
                 }
                 string rules = game.Value<string>("rules");
@@ -447,7 +438,6 @@ namespace API.Services {
                     Fen = game.Value<string>("fen"),
                     EndTime = endTime
                 });
-                // await _context.SaveChangesAsync();
             }
             // await _context.SaveChangesAsync();
         }
