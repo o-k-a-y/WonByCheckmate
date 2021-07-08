@@ -408,6 +408,8 @@ namespace API.Services {
                             case GameResult.Timeout:
                                 result = nameof(GameResultType.WonByTimeout);
                                 break;
+                            default:
+                                continue;
                         }
                         break;
                     // Otherwise we lost
@@ -423,7 +425,10 @@ namespace API.Services {
                     case GameResult.Timeout:
                         result = nameof(GameResultType.LostByTimeout);
                         break;
+                    default:
+                        continue;
                 }
+
 
                 // TODO: There is more useful information within the pgn like opening played etc
                 _context.Games.Add(new Game {

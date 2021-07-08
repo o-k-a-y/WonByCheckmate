@@ -1,24 +1,39 @@
-
 <p>
-  Try not to spam the requests as the server may rate limit you and you may get inaccurate results (only some games will be parsed if any)
+  Try not to spam the requests as the server may rate limit you and you may get inaccurate results (only some games will
+  be parsed if any)
 </p>
 
 <app-user-form (onSubmitForm)="fetchPlayerStats($event)"></app-user-form>
+
+
+
+<ul class="nav nav-pills">
+  <li class="nav-item">
+    <a class="nav-link active" href="#">Tables</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="#">Graphs</a>
+  </li>
+</ul>
 
 <p *ngIf="httpError">
   Some http request failed (probably rate limited)
 </p>
 
-<!-- Refactor -->
-<p *ngIf="doneParsing && stats!=null">
-    <app-tables [data]="stats.stats"></app-tables>
-</p>
+
+<!-- TODO: Refactor to another component -->
+<ng-container *ngIf="doneParsing && stats!=null">
+  <!-- TODO: show whichever one depending on which nav item is clicked -->
+  <app-pie-charts [data]="stats.stats"></app-pie-charts>
+  <app-tables [data]="stats.stats"></app-tables>
 
 
-<!-- Remove or refactor -->
+</ng-container>
+
+
+<!-- TODO: Remove or refactor -->
 <!-- <p *ngIf="doneParsing && stats!=null">
   <br>
     <app-game-configuration [name]=key [results]="stats.stats[key]" *ngFor="let key of configurations"></app-game-configuration>
 </p>
  -->
-

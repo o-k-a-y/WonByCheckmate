@@ -11,7 +11,9 @@ Chess.com players to avoid because they rage quit by closing the site/app causin
 .NET Core API written as a wrapper to the chess.com API to parse the entire game archives of a chess.com user and return statistics of how the games ended as JSON.
 
 # Frontend
-Angular to display JSON returned from API as a table.
+- Angular to display JSON returned from API as a table.
+- Chart.js to display pie charts.
+  - https://valor-software.com/ng2-charts/
 
 
 # Database

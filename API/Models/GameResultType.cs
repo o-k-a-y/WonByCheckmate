@@ -4,9 +4,9 @@ namespace API.Models {
         WonByTimeout,
         WonByCheckmate,
         WonByAbandonment,
-        WonByKingOfTheHill,
-        WonByThreeCheck,
-        WonByBugHouse,
+        // WonByKingOfTheHill,
+        // WonByThreeCheck,
+        // WonByBugHouse,
         DrawByAgreement,
         DrawByStalemate,
         DrawByRepetition,
@@ -17,8 +17,8 @@ namespace API.Models {
         LostByTimeout,
         LostByCheckmate,
         LostByAbandonment,
-        LostByThreeCheck,
-        LostByKingOfTheHill,
-        LostByBugHousePartnerLose
+        // LostByThreeCheck,
+        // LostByKingOfTheHill,
+        // LostByBugHousePartnerLose
     };
 }

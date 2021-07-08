@@ -21,8 +21,8 @@ namespace API.Controllers {
 
         [HttpGet("games/{username}")]
         public async Task<ActionResult<IEnumerable<Game>>> GetGames(string username) {
-            await _chessStatsService.GetGames(username);
-            return Ok(await _context.Games.ToListAsync());
+            return Ok(await _chessStatsService.GetGames(username));
+            // return Ok(await _context.Games.ToListAsync());
         }
         [HttpGet("{username}")]
         public async Task<ActionResult<ChessStats>> GetStats(string username) {
