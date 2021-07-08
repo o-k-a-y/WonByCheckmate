@@ -20,9 +20,8 @@ export class PieChartComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     this.colors = this.generateColors(this.labels.length);
     
-
     console.log('please look here');
-    console.log(this.data);
+    console.log(this.extractResults(this.data).length);
   }
 
   @ViewChild('myChart') myChart: ElementRef;
@@ -31,13 +30,14 @@ export class PieChartComponent implements OnInit, AfterViewInit {
     this.canvas = this.myChart.nativeElement;
     var ctx = this.canvas.getContext('2d');
 
+    // The actual chart
     new Chart(ctx, {
       type: 'pie',
       data: {
         labels: this.labels,
         datasets: [{
-          label: 'What is this label for?',
-          data: this.extractResults(),
+          // label: 'What is this label for?',
+          data: this.extractResults(this.data),
           // Randomly choose these colors, but make it deterministic so no two colors are repeated next to each other
           backgroundColor: this.colors.map(rgb => `rgba(${rgb},0.4)`),
           borderColor: this.colors.map(rgb => `rgba(${rgb},1)`),
@@ -45,11 +45,21 @@ export class PieChartComponent implements OnInit, AfterViewInit {
         }]
       },
       options: {
+        responsive: true,
+        maintainAspectRatio: false,
         plugins: {
           title: {
             display: true,
             text: this.title
-          }
+          },
+          legend: {
+            position: 'left',
+            fullSize: true
+            // fullSize: false
+            // labels: {
+            //   padding: 5
+            // }
+          },
         }
       }
     });
@@ -74,7 +84,7 @@ export class PieChartComponent implements OnInit, AfterViewInit {
     return [...colors];
   }
 
-  extractResults(): number[] {
-    return Object.values(this.data);
+  extractResults(data: {}): number[] {
+    return Object.values(data);
   }
 }
