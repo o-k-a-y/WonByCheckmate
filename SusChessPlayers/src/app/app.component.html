@@ -6,28 +6,34 @@
 <app-user-form (onSubmitForm)="fetchPlayerStats($event)"></app-user-form>
 
 
+<p class="httpError" *ngIf="httpError">
+  Some http request failed (probably rate limited)
+</p>
 
-<ul class="nav nav-pills">
+<ul class="nav nav-tabs justify-content-end">
   <li class="nav-item">
-    <a class="nav-link active" href="#">Tables</a>
+    <a class="nav-link active"
+      [class.disabled]="displayTables"
+      [class.active]="displayTables"
+      (click)="toggleCharts()"
+    >Tables</a>
   </li>
   <li class="nav-item">
-    <a class="nav-link" href="#">Graphs</a>
+    <a class="nav-link"
+      [class.disabled]="!displayTables"
+      [class.active]="!displayTables"
+      (click)="toggleCharts()"
+    >Graphs</a>
   </li>
 </ul>
 
-<p *ngIf="httpError">
-  Some http request failed (probably rate limited)
-</p>
 
 
 <!-- TODO: Refactor to another component -->
 <ng-container *ngIf="doneParsing && stats!=null">
   <!-- TODO: show whichever one depending on which nav item is clicked -->
-  <app-pie-charts [data]="stats.stats"></app-pie-charts>
-  <app-tables [data]="stats.stats"></app-tables>
-
-
+  <app-tables *ngIf="displayTables" [data]="stats.stats"></app-tables>
+  <app-pie-charts *ngIf="!displayTables" [data]="stats.stats"></app-pie-charts>
 </ng-container>
 
 

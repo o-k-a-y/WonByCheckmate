@@ -14,6 +14,7 @@ export class AppComponent {
   stats: JSON;
   configurations;
 
+  displayTables: boolean = true;
 
   constructor(public playerStatsService: PlayerStatsService) {
     
@@ -40,6 +41,10 @@ export class AppComponent {
         this.httpError = true;
       }
     );
+  }
+
+  toggleCharts() {
+    this.displayTables = !this.displayTables;
   }
   
 }

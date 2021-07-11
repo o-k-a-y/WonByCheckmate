@@ -18,17 +18,20 @@ export class PieChartComponent implements OnInit, AfterViewInit {
   colors: string[];
 
   ngOnInit(): void {
+    // let num = this.labels.length;
+    // while (num != 0) {
+    //   this.labels[num-1] = 'test';
+    //   num--;
+    // }
+    // this.labels.forEach(x => x = "test");
     this.colors = this.generateColors(this.labels.length);
-    
-    console.log('please look here');
-    console.log(this.extractResults(this.data).length);
   }
 
   @ViewChild('myChart') myChart: ElementRef;
 
   ngAfterViewInit(): void {
     this.canvas = this.myChart.nativeElement;
-    var ctx = this.canvas.getContext('2d');
+    let ctx = this.canvas.getContext('2d');
 
     // The actual chart
     new Chart(ctx, {
@@ -54,11 +57,6 @@ export class PieChartComponent implements OnInit, AfterViewInit {
           },
           legend: {
             position: 'left',
-            fullSize: true
-            // fullSize: false
-            // labels: {
-            //   padding: 5
-            // }
           },
         }
       }
