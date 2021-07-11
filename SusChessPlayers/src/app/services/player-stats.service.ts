@@ -1,8 +1,6 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Inject, Injectable, Optional } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { GameResultType } from '../models/game-result-type';
-import { retry, catchError } from 'rxjs/operators';
 
 @Injectable({
     providedIn: 'root'

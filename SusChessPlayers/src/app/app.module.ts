@@ -12,6 +12,7 @@ import { ChartsModule } from 'ng2-charts';
 import { PieChartsComponent } from './pie-charts/pie-charts.component';
 import { PieChartComponent } from './pie-charts/wld-pie-charts/pie-chart/pie-chart.component';
 import { WldPieChartsComponent } from './pie-charts/wld-pie-charts/wld-pie-charts.component';
+import { WldPieChartComponent } from './pie-charts/wld-pie-charts/wld-pie-chart/wld-pie-chart.component';
 
 @NgModule({
   declarations: [
@@ -21,7 +22,7 @@ import { WldPieChartsComponent } from './pie-charts/wld-pie-charts/wld-pie-chart
     TableComponent,
     TablesComponent,
     PieChartsComponent, 
-    PieChartComponent, WldPieChartsComponent
+    PieChartComponent, WldPieChartsComponent, WldPieChartComponent
   ],
   imports: [
     BrowserModule,

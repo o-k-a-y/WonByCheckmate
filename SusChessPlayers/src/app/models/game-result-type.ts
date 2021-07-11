@@ -6,7 +6,7 @@ export const enum GameResultType
     WonByAbandonment = 'abandoned',
     DrawByAgreement = 'agreed',
     DrawByStalemate = 'stalemate',
-    DrawByRepitition = 'repetition',
+    DrawByRepetition = 'repetition',
     DrawByInsufficientMaterial = 'insufficient',
     DrawByTimeoutVsInsufficientMaterial = 'timevsinsufficient',
     DrawBy50Move = '50move',

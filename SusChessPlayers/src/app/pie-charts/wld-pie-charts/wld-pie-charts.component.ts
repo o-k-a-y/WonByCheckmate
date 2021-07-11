@@ -12,13 +12,15 @@ export class WldPieChartsComponent implements OnInit {
   @Input() wonLabels: string[] = [];
   @Input() lostLabels: string[] = [];
   @Input() drawLabels: string[] = [];
-
+  
   wldLabels: string[] = ['Won', 'Lost', 'Draw'];
 
   wonData: {} = {};
   lostData: {} = {};
   drawData: {} = {};
   wldData: {} = {};
+
+  shouldShowDetailedCharts: boolean;
   
   constructor() { }
 
@@ -43,5 +45,9 @@ export class WldPieChartsComponent implements OnInit {
     this.wldData['Won'] = wonGames;
     this.wldData['Lost'] = lostGames;
     this.wldData['Draw'] = drawGames; 
+  }
+
+  toggleShowDetailedCharts() {
+    this.shouldShowDetailedCharts = !this.shouldShowDetailedCharts;
   }
 }
