@@ -253,6 +253,18 @@ namespace API.Services {
 
             ChessStats stats = new ChessStats();
             stats.stats = new JObject();
+
+            // TODO: Shouldn't be storing the entire database in memory, 
+            // improve the performance of the database and then change code back to multiple database queries
+            List<Game> games = await _context.Games.Select(game => 
+                new Game {
+                    Username = game.Username,
+                    Result = game.Result,
+                    TimeClass = game.TimeClass,
+                    TimeControl = game.TimeControl,
+                    Rules = game.Rules
+            }).ToListAsync();
+
             foreach (string config in validGameConfigurations) {
                 // chess:30:bullet
                 List<string> c = new List<string>(config.Split(':'));
@@ -264,7 +276,11 @@ namespace API.Services {
                 // int count = 0;
                 foreach (var result in resultTypes) {
                     // count += await _context.Games.Where(game => game.Username == this.username && game.Result == result && game.TimeClass == timeClass && game.TimeControl == timeControl && game.Rules == rules).CountAsync();
-                    stats.stats[config][result] = await _context.Games.Where(game => game.Username == username && game.Result == result && game.TimeClass == timeClass && game.TimeControl == timeControl && game.Rules == rules).CountAsync();
+                    
+                    stats.stats[config][result] = games.Count(game => game.Username == username && game.Result == result && game.TimeClass == timeClass && game.TimeControl == timeControl && game.Rules == rules);
+                    // TODO: Uncomment/fix when database is improved
+                    // stats.stats[config][result] = await _context.Games.CountAsync(game => game.Username == username && game.Result == result && game.TimeClass == timeClass && game.TimeControl == timeControl && game.Rules == rules);
+
                 }
                 // Console.WriteLine($"Count for {config} = {count}");
             }
