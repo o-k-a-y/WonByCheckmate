@@ -205,6 +205,7 @@ namespace API.Services {
         }
 
         public async Task<ChessStats> GetStats(string username) {
+            // username = username.ToLower();
             await UpdateGamesIfNeeded(username);
 
             return await BuildStatsFromDatabase(username);
@@ -213,6 +214,7 @@ namespace API.Services {
 
         // Returns all the games a user has played
         public async Task<IEnumerable<Game>> GetGames(string username) {
+            // username = username.ToLower();
             await UpdateGamesIfNeeded(username);
 
             return await _context.Games.ToListAsync();
@@ -221,6 +223,7 @@ namespace API.Services {
         private async Task UpdateGamesIfNeeded(string username) {
             // Stopwatch stopWatch = new Stopwatch();
             // stopWatch.Start();
+            Console.WriteLine(username);
 
             this.endpoint = baseUrl + username + archives;
 

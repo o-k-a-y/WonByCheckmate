@@ -12,21 +12,19 @@ using Newtonsoft.Json.Linq;
 namespace API.Controllers {
     public class ChessStatsController : BaseApiController {
         private readonly IChessStatsService _chessStatsService;
-        private readonly DataContext _context;
 
         public ChessStatsController(DataContext context, IChessStatsService chessStatsService) {
-            _context = context;
             _chessStatsService = chessStatsService;
         }
 
         [HttpGet("games/{username}")]
         public async Task<ActionResult<IEnumerable<Game>>> GetGames(string username) {
-            return Ok(await _chessStatsService.GetGames(username));
-            // return Ok(await _context.Games.ToListAsync());
+            // TODO: Some http interceptor to take care of casting username to lower case?
+            return Ok(await _chessStatsService.GetGames(username.ToLower()));
         }
         [HttpGet("{username}")]
         public async Task<ActionResult<ChessStats>> GetStats(string username) {
-            return Ok(await _chessStatsService.GetStats(username));
+            return Ok(await _chessStatsService.GetStats(username.ToLower()));
         }
 
     }
