@@ -22,6 +22,8 @@ namespace API.Services {
         private const string archives = "/games/archives";
         private string endpoint;
 
+
+        // TODO: maybe switch timeControl and timeClass values (chess:bullet:30)
         // All known configurations we care about (double check to make sure none are missing)
         // rules:time control:time class
         // This set is used when a game is being parsed to see if we even want to parse results further

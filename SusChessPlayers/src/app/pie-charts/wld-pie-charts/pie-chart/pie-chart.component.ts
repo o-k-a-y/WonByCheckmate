@@ -78,7 +78,10 @@ export class PieChartComponent implements OnInit, AfterViewInit {
         plugins: {
           title: {
             display: true,
-            text: this.title
+            text: this.title,
+            font: {
+              size: 20
+            }
           },
           legend: {
             position: 'left',
