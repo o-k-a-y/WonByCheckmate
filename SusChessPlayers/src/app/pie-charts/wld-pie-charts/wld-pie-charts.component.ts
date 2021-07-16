@@ -29,6 +29,7 @@ export class WldPieChartsComponent implements OnInit {
     let lostGames = 0;
     let drawGames = 0;
 
+    // Build the data for the pie charts for won/lost/draw
     for (const key in this.data) {
       if (key.includes('Won')) {
         this.wonData[key] = this.data[key];
@@ -49,5 +50,13 @@ export class WldPieChartsComponent implements OnInit {
 
   toggleShowDetailedCharts() {
     this.shouldShowDetailedCharts = !this.shouldShowDetailedCharts;
+  }
+
+  // TODO: Properly convert titles
+  convertTitle(gameConfig: string): string {
+    return "🚀"
+    // const name = this.title.split(':');
+
+    // this.title = 
   }
 }
