@@ -27,36 +27,67 @@ namespace API.Services {
         // All known configurations we care about (double check to make sure none are missing)
         // rules:time control:time class
         // This set is used when a game is being parsed to see if we even want to parse results further
-        private readonly HashSet<string> validGameConfigurations = new HashSet<string>{
+        // private readonly HashSet<string> validGameConfigurations = new HashSet<string>{
+            
+        //     // Bullet
+        //     // "chess:10:bullet", // doesn't exist?
+        //     "chess:30:bullet", // 30 seconds
+        //     "chess:60:bullet", // 1 minute
+        //     "chess:60+1:bullet", // 1 minute + 1 second per move
+        //     "chess:120+1:bullet", // 2 minutes + 1 second per move
+        //     // "chess:120:bullet", // doesn't exist?
+
+        //     // Blitz
+        //     "chess:180:blitz",
+        //     "chess:300:blitz",
+        //     "chess:480:blitz", // this one isn't very common, remove maybe
+        //     "chess:600:blitz",
+            
+        //     // Rapid
+        //     "chess:600:rapid", // 10 minute game
+        //     "chess:900:rapid", // 15 minute
+        //     "chess:1200:rapid", // 20 minute
+        //     "chess:1800:rapid", // 30 minute
+        //     "chess:3600:rapid", // 1 hour
+
+        //     // Daily
+        //     "chess:1/86400:daily", // 1 day per move
+        //     "chess:1/172800:daily", // 2 days
+        //     "chess:1/259200:daily", // 3 days
+        //     "chess:1/432000:daily", // 5 days 
+        //     "chess:1/604800:daily", // 7 days
+        //     "chess:1/1209600:daily", // 14 days
+        // };
+        private readonly HashSet<Config> validGameConfigurations = new HashSet<Config> {
             
             // Bullet
             // "chess:10:bullet", // doesn't exist?
-            "chess:30:bullet", // 30 seconds
-            "chess:60:bullet", // 1 minute
-            "chess:60+1:bullet", // 1 minute + 1 second per move
-            "chess:120+1:bullet", // 2 minutes + 1 second per move
+            new Config("chess", "bullet", "30"), // 30 seconds
+            new Config("chess", "bullet", "60"), // 1 minute
+            new Config("chess", "bullet", "60+1"), // 1 minute + 1 second per move
+            new Config("chess", "bullet", "120+1"), // 2 minutes + 1 second per move
             // "chess:120:bullet", // doesn't exist?
 
             // Blitz
-            "chess:180:blitz",
-            "chess:300:blitz",
-            "chess:480:blitz", // this one isn't very common, remove maybe
-            "chess:600:blitz",
+            new Config("chess", "blitz", "180"),
+            new Config("chess", "blitz", "300"),
+            new Config("chess", "blitz", "480"), // this one isn't very common, remove maybe
+            new Config("chess", "blitz", "600"),
             
             // Rapid
-            "chess:600:rapid", // 10 minute game
-            "chess:900:rapid", // 15 minute
-            "chess:1200:rapid", // 20 minute
-            "chess:1800:rapid", // 30 minute
-            "chess:3600:rapid", // 1 hour
+            new Config("chess", "rapid", "900"), // 15 minute
+            new Config("chess", "rapid", "600"), // 10 minute game
+            new Config("chess", "rapid", "1200"), // 20 minute
+            new Config("chess", "rapid", "1800"), // 30 minute
+            new Config("chess", "rapid", "3600"), // 1 hour
 
             // Daily
-            "chess:1/86400:daily", // 1 day per move
-            "chess:1/172800:daily", // 2 days
-            "chess:1/259200:daily", // 3 days
-            "chess:1/432000:daily", // 5 days 
-            "chess:1/604800:daily", // 7 days
-            "chess:1/1209600:daily", // 14 days
+            new Config("chess", "daily", "1/86400"), // 1 day per move
+            new Config("chess", "daily", "1/172800"), // 2 days
+            new Config("chess", "daily", "1/259200"), // 3 days
+            new Config("chess", "daily", "1/432000"), // 5 days 
+            new Config("chess", "daily", "1/604800"), // 7 days
+            new Config("chess", "daily", "1/1209600"), // 14 days
         };
 
         // All known game configurations
@@ -270,19 +301,30 @@ namespace API.Services {
                     Rules = game.Rules
             }).ToListAsync();
 
-            foreach (string config in validGameConfigurations) {
+            // TODO: maybe return a more structured JSON
+            // {
+                // bullet: 
+                    // 30: {}
+                    // 60: {}
+                // daily:
+                // 
+            // }
+            foreach (Config config in validGameConfigurations) {
                 // chess:30:bullet
-                List<string> c = new List<string>(config.Split(':'));
-                string timeClass = c[2];
-                string timeControl = c[1];
-                string rules = c[0];
+                // List<string> c = new List<string>(config.Split(':'));
+                // string timeClass = c[2];
+                // string timeControl = c[1];
+                // string rules = c[0];
+                string rules = config.Rules;
+                string timeClass = config.TimeClass;
+                string timeControl = config.TimeControl;
                 var resultTypes = Enum.GetNames(typeof(GameResultType));
-                stats.stats[config] = new JObject();
+                
+                stats.stats[config.ToString()] = new JObject();
                 // int count = 0;
                 foreach (var result in resultTypes) {
                     // count += await _context.Games.Where(game => game.Username == this.username && game.Result == result && game.TimeClass == timeClass && game.TimeControl == timeControl && game.Rules == rules).CountAsync();
-                    
-                    stats.stats[config][result] = games.Count(game => game.Username == username && game.Result == result && game.TimeClass == timeClass && game.TimeControl == timeControl && game.Rules == rules);
+                    stats.stats[config.ToString()][result] = games.Count(game => game.Username == username && game.Result == result && game.TimeClass == timeClass && game.TimeControl == timeControl && game.Rules == rules);
                     // TODO: Uncomment/fix when database is improved
                     // stats.stats[config][result] = await _context.Games.CountAsync(game => game.Username == username && game.Result == result && game.TimeClass == timeClass && game.TimeControl == timeControl && game.Rules == rules);
 
@@ -375,13 +417,18 @@ namespace API.Services {
                 string rules = game.Value<string>("rules");
                 string timeControl = game.Value<string>("time_control");
                 string timeClass = game.Value<string>("time_class");
-
-                string configuration = $"{rules}:{timeControl}:{timeClass}";
+                Config config = new Config(rules, timeControl, timeClass);
+                // string configuration = $"{rules}:{timeControl}:{timeClass}";
 
                 // Only check valid game configurations
-                if (!validGameConfigurations.Contains(configuration)) {
+                if (!validGameConfigurations.Contains(config)) {
                     continue;
                 }
+
+                // // Only check valid game configurations
+                // if (!validGameConfigurations.Contains(configuration)) {
+                //     continue;
+                // }
 
                 // Determine outcome
                 JObject white = game.Value<JObject>("white");
