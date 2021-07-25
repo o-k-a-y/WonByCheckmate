@@ -1,5 +1,5 @@
-# Sus-Chess-Players
-Chess.com players to avoid because they rage quit by closing the site/app causing you to wait longer.
+# WonByCheckmate
+Chess.com API for statistical information on players.
 
 # CORS issues
 - For some reason running Angular on localhost resulted in seemingly unavoidable CORS issues when calling the chess API causing requests to fail
