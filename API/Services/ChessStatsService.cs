@@ -237,7 +237,7 @@ namespace API.Services {
             _client = httpFactory.CreateClient();
         }
 
-        public async Task<ChessStats> GetStats(string username) {
+        public async Task<Dictionary<string, Dictionary<string, Dictionary<string, int>>>> GetStats(string username) {
             // username = username.ToLower();
             await UpdateGamesIfNeeded(username);
 
@@ -285,10 +285,11 @@ namespace API.Services {
 
         // TODO: Once tables are separated with User table that contains Game table reference, modify LINQ queries to return updated structure according to schema
         // TODO: The LINQ queries used are probably not efficient at all
-        private async Task<ChessStats> BuildStatsFromDatabase(string username) {
+        // TODO: Some way to specify rules in case in the future different chess rules besides "chess" are allowed (probably not)
+        private async Task<Dictionary<string, Dictionary<string, Dictionary<string, int>>>> BuildStatsFromDatabase(string username) {
 
-            ChessStats stats = new ChessStats();
-            stats.stats = new JObject();
+            // ChessStats stats = new ChessStats();
+            // stats.stats = new JObject();
 
             // TODO: Shouldn't be storing the entire database in memory, 
             // improve the performance of the database and then change code back to multiple database queries
@@ -300,36 +301,34 @@ namespace API.Services {
                     TimeControl = game.TimeControl,
                     Rules = game.Rules
             }).ToListAsync();
+            
 
-            // TODO: maybe return a more structured JSON
-            // {
-                // bullet: 
-                    // 30: {}
-                    // 60: {}
-                // daily:
-                // 
-            // }
+            // TODO: Some way to abstract to separate objects?
+            Dictionary<string, Dictionary<string, Dictionary<string, int>>> stats = new Dictionary<string, Dictionary<string, Dictionary<string, int>>>();
+
+            // TODO: When adding filtering on game configs, replace validGameConfigurations with that list/selection (i.e. user only wants blitz stats, or a subset of each)
             foreach (Config config in validGameConfigurations) {
-                // chess:30:bullet
-                // List<string> c = new List<string>(config.Split(':'));
-                // string timeClass = c[2];
-                // string timeControl = c[1];
-                // string rules = c[0];
                 string rules = config.Rules;
                 string timeClass = config.TimeClass;
                 string timeControl = config.TimeControl;
                 var resultTypes = Enum.GetNames(typeof(GameResultType));
-                
-                stats.stats[config.ToString()] = new JObject();
-                // int count = 0;
-                foreach (var result in resultTypes) {
-                    // count += await _context.Games.Where(game => game.Username == this.username && game.Result == result && game.TimeClass == timeClass && game.TimeControl == timeControl && game.Rules == rules).CountAsync();
-                    stats.stats[config.ToString()][result] = games.Count(game => game.Username == username && game.Result == result && game.TimeClass == timeClass && game.TimeControl == timeControl && game.Rules == rules);
-                    // TODO: Uncomment/fix when database is improved
-                    // stats.stats[config][result] = await _context.Games.CountAsync(game => game.Username == username && game.Result == result && game.TimeClass == timeClass && game.TimeControl == timeControl && game.Rules == rules);
 
+                if (!stats.ContainsKey(timeClass)) {
+                    stats.Add(timeClass, new Dictionary<string, Dictionary<string, int>>());
+                    stats[timeClass].Add(timeControl, new Dictionary<string, int>());
+                } else {
+                    if (!stats[timeClass].ContainsKey(timeControl)) {
+                        stats[timeClass].Add(timeControl, new Dictionary<string, int>());
+                    }
                 }
-                // Console.WriteLine($"Count for {config} = {count}");
+
+                foreach (var result in resultTypes) {
+                    int count = games.Count(game => game.Username == username && game.Result == result && game.TimeClass == timeClass && game.TimeControl == timeControl && game.Rules == rules);
+                    
+                    if (!stats[timeClass][timeControl].ContainsKey(result)) {
+                        stats[timeClass][timeControl].Add(result, count);
+                    }
+                }
             }
 
             return stats;
