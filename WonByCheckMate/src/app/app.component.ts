@@ -7,7 +7,7 @@ import { PlayerStatsService } from './services/player-stats.service';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'SusChessPlayers';
+  title = 'WonByCheckmate';
 
   httpError: boolean;
   doneParsing: boolean;
