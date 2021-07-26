@@ -1,6 +1,5 @@
 <p>
-  Try not to spam the requests as the server may rate limit you and you may get inaccurate results (only some games will
-  be parsed if any)
+  Try not to spam the requests as the server may rate limit you
 </p>
 
 <app-user-form (onSubmitForm)="fetchPlayerStats($event)"></app-user-form>
@@ -32,14 +31,6 @@
 <!-- TODO: Refactor to another component -->
 <ng-container *ngIf="doneParsing && stats!=null">
   <!-- TODO: show whichever one depending on which nav item is clicked -->
-  <app-tables *ngIf="displayTables" [data]="stats.stats"></app-tables>
-  <app-pie-charts *ngIf="!displayTables" [data]="stats.stats"></app-pie-charts>
+  <app-tables *ngIf="displayTables" [data]="stats"></app-tables>
+  <app-pie-charts *ngIf="!displayTables" [data]="stats"></app-pie-charts>
 </ng-container>
-
-
-<!-- TODO: Remove or refactor -->
-<!-- <p *ngIf="doneParsing && stats!=null">
-  <br>
-    <app-game-configuration [name]=key [results]="stats.stats[key]" *ngFor="let key of configurations"></app-game-configuration>
-</p>
- -->

@@ -11,8 +11,7 @@ export class AppComponent {
 
   httpError: boolean;
   doneParsing: boolean;
-  stats: JSON;
-  configurations;
+  stats: {};
 
   displayTables: boolean = true;
 
@@ -31,10 +30,9 @@ export class AppComponent {
     console.log(username);
 
     this.playerStatsService.getStats(username).subscribe(
-      (stats: JSON) => {
+      (stats: {}) => {
         console.log(stats);
         this.stats = stats;
-        this.configurations = Object.keys(stats['stats']);
         this.doneParsing = true;
       },
       error => {

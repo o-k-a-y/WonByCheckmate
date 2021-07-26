@@ -237,7 +237,7 @@ namespace API.Services {
             _client = httpFactory.CreateClient();
         }
 
-        public async Task<Dictionary<string, Dictionary<string, Dictionary<string, int>>>> GetStats(string username) {
+        public async Task<ChessStats> GetStats(string username) {
             // username = username.ToLower();
             await UpdateGamesIfNeeded(username);
 
@@ -286,25 +286,31 @@ namespace API.Services {
         // TODO: Once tables are separated with User table that contains Game table reference, modify LINQ queries to return updated structure according to schema
         // TODO: The LINQ queries used are probably not efficient at all
         // TODO: Some way to specify rules in case in the future different chess rules besides "chess" are allowed (probably not)
-        private async Task<Dictionary<string, Dictionary<string, Dictionary<string, int>>>> BuildStatsFromDatabase(string username) {
+        private async Task<ChessStats> BuildStatsFromDatabase(string username) {
 
             // ChessStats stats = new ChessStats();
             // stats.stats = new JObject();
 
             // TODO: Shouldn't be storing the entire database in memory, 
             // improve the performance of the database and then change code back to multiple database queries
-            List<Game> games = await _context.Games.Select(game => 
+            List<Game> games = await _context.Games.Select(game =>
                 new Game {
                     Username = game.Username,
                     Result = game.Result,
                     TimeClass = game.TimeClass,
                     TimeControl = game.TimeControl,
                     Rules = game.Rules
-            }).ToListAsync();
-            
+                }).ToListAsync();
+
 
             // TODO: Some way to abstract to separate objects?
-            Dictionary<string, Dictionary<string, Dictionary<string, int>>> stats = new Dictionary<string, Dictionary<string, Dictionary<string, int>>>();
+            ChessStats stats = new ChessStats();
+
+            // var dict = timeClass switch
+            // {
+            //     "blitz" => rootObject.Blitz,
+            //     etc.
+            // };
 
             // TODO: When adding filtering on game configs, replace validGameConfigurations with that list/selection (i.e. user only wants blitz stats, or a subset of each)
             foreach (Config config in validGameConfigurations) {
@@ -313,25 +319,103 @@ namespace API.Services {
                 string timeControl = config.TimeControl;
                 var resultTypes = Enum.GetNames(typeof(GameResultType));
 
-                if (!stats.ContainsKey(timeClass)) {
-                    stats.Add(timeClass, new Dictionary<string, Dictionary<string, int>>());
-                    stats[timeClass].Add(timeControl, new Dictionary<string, int>());
-                } else {
-                    if (!stats[timeClass].ContainsKey(timeControl)) {
-                        stats[timeClass].Add(timeControl, new Dictionary<string, int>());
-                    }
-                }
-
                 foreach (var result in resultTypes) {
                     int count = games.Count(game => game.Username == username && game.Result == result && game.TimeClass == timeClass && game.TimeControl == timeControl && game.Rules == rules);
-                    
-                    if (!stats[timeClass][timeControl].ContainsKey(result)) {
-                        stats[timeClass][timeControl].Add(result, count);
+                    Dictionary<string, ResultStats> tc = GetTimeClass(stats, timeClass);
+
+                    if (!tc.ContainsKey(timeControl)) {
+                        tc.Add(timeControl, new ResultStats());
+                    }
+                    switch (result) {
+                        case nameof(GameResultType.WonByResignation):
+                            tc[timeControl].WonByResignation = count;
+                            break;
+                        case nameof(GameResultType.WonByTimeout):
+                            tc[timeControl].WonByTimeout = count;
+                            break;
+                        case nameof(GameResultType.WonByCheckmate):
+                            tc[timeControl].WonByCheckmate = count;
+                            break;
+                        case nameof(GameResultType.WonByAbandonment):
+                            tc[timeControl].WonByAbandonment = count;
+                            break;
+                        case nameof(GameResultType.DrawByAgreement):
+                            tc[timeControl].DrawByAgreement = count;
+                            break;
+                        case nameof(GameResultType.DrawByStalemate):
+                            tc[timeControl].DrawByStalemate = count;
+                            break;
+                        case nameof(GameResultType.DrawByRepetition):
+                            tc[timeControl].DrawByRepetition = count;
+                            break;
+                        case nameof(GameResultType.DrawByInsufficientMaterial):
+                            tc[timeControl].DrawByInsufficientMaterial = count;
+                            break;
+                        case nameof(GameResultType.DrawByTimeoutVsInsufficientMaterial):
+                            tc[timeControl].DrawByTimeoutVsInsufficientMaterial = count;
+                            break;
+                        case nameof(GameResultType.DrawBy50Move):
+                            tc[timeControl].DrawBy50Move = count;
+                            break;
+                        case nameof(GameResultType.LostByResignation):
+                            tc[timeControl].LostByResignation = count;
+                            break;
+                        case nameof(GameResultType.LostByTimeout):
+                            tc[timeControl].LostByTimeout = count;
+                            break;
+                        case nameof(GameResultType.LostByCheckmate):
+                            tc[timeControl].LostByCheckmate = count;
+                            break;
+                        case nameof(GameResultType.LostByAbandonment):
+                            tc[timeControl].LostByAbandonment = count;
+                            break;
                     }
                 }
             }
 
+            // if (!stats.ContainsKey(timeClass)) {
+            //     stats.Add(timeClass, new Dictionary<string, Dictionary<string, int>>());
+            //     stats[timeClass].Add(timeControl, new Dictionary<string, int>());
+            // } else {
+            //     if (!stats[timeClass].ContainsKey(timeControl)) {
+            //         stats[timeClass].Add(timeControl, new Dictionary<string, int>());
+            //     }
+            // }
+
+            // foreach (var result in resultTypes) {
+            //     if (!stats[timeClass][timeControl].ContainsKey(result)) {
+            //         int count = games.Count(game => game.Username == username && game.Result == result && game.TimeClass == timeClass && game.TimeControl == timeControl && game.Rules == rules);
+            //         stats[timeClass][timeControl].Add(result, count);
+            //     }
+            // }
+            // }
+
             return stats;
+        }
+
+        // The single time class property as defined on the ChessStats class so we can avoid unnecessary switch statements
+        private Dictionary<string, ResultStats> GetTimeClass(ChessStats stats, string timeClass) {
+            return timeClass switch
+            {
+                "bullet" => stats.Bullet,
+                "blitz" => stats.Blitz,
+                "rapid" => stats.Rapid,
+                "daily" => stats.Daily,
+                _  => null
+            };
+
+            // switch (timeClass) {
+            //     case "bullet":
+            //         return stats.Bullet;
+            //     case "blitz":
+            //         return stats.Blitz;
+            //     case "rapid":
+            //         return stats.Rapid;
+            //     case "daily":
+            //         return stats.Daily;
+            //     default:
+            //         return null;
+            // }
         }
 
         // Epoch time of most recent game played

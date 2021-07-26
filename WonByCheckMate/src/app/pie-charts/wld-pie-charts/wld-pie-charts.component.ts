@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { ConfigService } from 'src/app/services/config-service';
 
 @Component({
   selector: 'app-wld-pie-charts',
@@ -14,12 +15,12 @@ export class WldPieChartsComponent implements OnInit {
   @Input() drawLabels: string[] = [];
 
   // TODO: move to some service that handles timeClass, timeControl, etc to inject where needed
-  private timeClass: {} = {
-    "bullet": "🚀",
-    "blitz": "⚡",
-    "rapid": "⏲️",
-    "daily": "🗓️"
-  }
+  // private timeClass: {} = {
+  //   "bullet": "🚀",
+  //   "blitz": "⚡",
+  //   "rapid": "⏲️",
+  //   "daily": "🗓️"
+  // }
   
   won = 'Won';
   lost = 'Lost';
@@ -33,7 +34,7 @@ export class WldPieChartsComponent implements OnInit {
 
   shouldShowDetailedCharts: boolean;
   
-  constructor() { }
+  constructor(private configService: ConfigService) { }
 
   ngOnInit(): void {
     let wonGames = 0;
@@ -42,13 +43,13 @@ export class WldPieChartsComponent implements OnInit {
 
     // Build the data for the pie charts for won/lost/draw
     for (const key in this.data) {
-      if (key.includes(this.won)) {
+      if (key.includes(this.won.toLowerCase())) {
         this.wonData[key] = this.data[key];
         wonGames += this.data[key];
-      } else if (key.includes(this.lost)) {
+      } else if (key.includes(this.lost.toLowerCase())) {
         this.lostData[key] = this.data[key];
         lostGames += this.data[key];
-      } else if (key.includes(this.draw)) {
+      } else if (key.includes(this.draw.toLowerCase())) {
         this.drawData[key] = this.data[key];
         drawGames += this.data[key];
       }
@@ -64,59 +65,17 @@ export class WldPieChartsComponent implements OnInit {
   }
 
   // TODO: Properly convert titles
-  convertTitle(gameConfig: string): string {
-    console.log(gameConfig);
-    const gameConfigArr = gameConfig.split(':');
-    const timeControl = this.convertTimeControl(gameConfigArr[1]);
-    const timeClass = this.convertTimeClass(gameConfigArr[2]);
+  // convertTitle(gameConfig: string): string {
+  //   console.log(gameConfig);
+  //   const gameConfigArr = gameConfig.split(':');
+  //   const timeControl = this.convertTimeControl(gameConfigArr[1]);
+  //   const timeClass = this.convertTimeClass(gameConfigArr[2]);
 
-    return `${timeClass} ${timeControl}`;
-  }
+  //   return `${timeClass} ${timeControl}`;
+  // }
 
-  private convertTimeClass(timeClass: string): string {
-    return this.timeClass[timeClass];
-  }
 
-  private convertTimeControl(timeControl: string): string {
-    // TODO: Use regex instead to convert
-    // Is it a daily game such as 1/86400 (24 hours to make a move)
-    if (timeControl.includes('/')) {
-      const dailyTime = timeControl.split('/');
-      if (dailyTime.length <= 1) {
-        return "time is broken";
-      }
 
-      const secondsPerMove = parseInt(dailyTime[1]);
-      const daysPerMove = secondsPerMove / (24 * 60 * 60);
-      return `${daysPerMove} days/move`;
-
-    }
-
-    // Time is in seconds, but check for +x which signifies +x seconds added after making a move
-    if (timeControl.includes('+')) {
-      const time = timeControl.split('+');
-
-      if (time.length <= 1) {
-        return "+ time is broken";
-      }
-
-      const extraSeconds = time[1];
-      const secondsPerMove = this.convertSecondsToTime(time[0]);
-
-      return `${secondsPerMove} | ${extraSeconds}`;
-    }
-
-    return this.convertSecondsToTime(timeControl);
-  }
-
-  private convertSecondsToTime(seconds: string): string {
-    const secondsPerMove = parseInt(seconds);
-    if (secondsPerMove < 60) {
-      return `${secondsPerMove} seconds`;
-    } else {
-      const minutesPerMove = secondsPerMove / 60;
-      return `${minutesPerMove} ${minutesPerMove === 1 ? "minute" : "minutes"}`;
-    }
-  }
+  
 
 }

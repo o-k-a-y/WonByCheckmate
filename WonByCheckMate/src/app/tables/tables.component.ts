@@ -8,36 +8,65 @@ import { Component, Input, OnInit } from '@angular/core';
 export class TablesComponent implements OnInit {
   @Input() data;
 
-  tableRows;
-  tableCols;
-  wonCols: string[] = [];
-  drawCols: string[] = [];
-  lostCols: string[] = [];
+  tables: {} = {};
+
   constructor() {}
 
   ngOnInit(): void {
-    this.tableRows = Object.keys(this.data);
-    console.log(`${this.tableRows} are the table rows returned`);
-    this.tableCols = Object.keys(this.data[this.tableRows[0]]); // terrible, maybe rewrite returned JSON
-    console.log(`${this.tableCols} are the table cols returned`);
+    const timeClasses = Object.keys(this.data);
 
-    // console.log(this.tableRows);
-    // console.log(this.tableCols);
-    console.log(this.data);
+    // Refactor/change below loop to follow consistency
+    if (timeClasses.length <= 0) {
+      console.log('There is no data!')
+      return;
+    }
 
-    this.tableCols.forEach(element => {
-      if (element.includes('Won')) {
-        this.wonCols.push(element);
-      } else if (element.includes('Draw')) {
-        this.drawCols.push(element);
-      } else if (element.includes('Lost')) {
-        this.lostCols.push(element);
-      }
+    timeClasses.forEach(timeClass => {
+      this.tables[timeClass] = {};
+      // console.log(this.data[timeClass]);
+      
+      Object.keys(this.data[timeClass]).forEach(timeControl => {
+        this.tables[timeClass][timeControl] = {};
+        this.tables[timeClass][timeControl]['won'] = {};
+        this.tables[timeClass][timeControl]['lost'] = {};
+        this.tables[timeClass][timeControl]['draw'] = {};
+
+        Object.keys(this.data[timeClass][timeControl]).forEach(result => {
+          const resultAmount = this.data[timeClass][timeControl][result];
+          
+          if (result.includes('won')) {
+            this.tables[timeClass][timeControl]['won'][result] = resultAmount;
+          } else if (result.includes('lost')) {
+            this.tables[timeClass][timeControl]['lost'][result] = resultAmount;
+          } else if (result.includes('draw')) {
+            this.tables[timeClass][timeControl]['draw'][result] = resultAmount;
+          }
+        })
+
+        // TODO: Make this work
+        // this.tables[timeClass]['won'] = {};
+        // this.tables[timeClass]['lost'] = {};
+        // this.tables[timeClass]['draw'] = {};
+
+        // this.tables[timeClass]['won'][timeControl] = {};
+        // this.tables[timeClass]['lost'][timeControl] = {};
+        // this.tables[timeClass]['draw'][timeControl] = {};
+
+        // Object.keys(this.data[timeClass][timeControl]).forEach(result => {
+        //   const resultAmount = this.data[timeClass][timeControl][result];
+          
+        //   if (result.includes('won')) {
+        //     this.tables[timeClass]['won'][timeControl][result] = resultAmount;
+        //   } else if (result.includes('lost')) {
+        //     this.tables[timeClass]['lost'][timeControl][result] = resultAmount;
+        //   } else if (result.includes('draw')) {
+        //     this.tables[timeClass]['draw'][timeControl][result] = resultAmount;
+        //   }
+        // })
+      })
     });
 
-    console.log(this.wonCols);
-    console.log(this.drawCols);
-    console.log(this.lostCols);
+    console.log(this.tables);
   }
 
 

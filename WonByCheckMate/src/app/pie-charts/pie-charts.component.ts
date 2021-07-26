@@ -44,7 +44,7 @@ export class PieChartsComponent implements OnInit {
     // console.log(this.lostLabels);
   }
 
-  // Turn something like WonByResignation into Resignation for easier user readability
+  // Turn something like wonByResignation into Resignation for easier user readability
   filterLabel(label: string) {
     return label.split('By')[1];
   }

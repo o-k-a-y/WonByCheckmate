@@ -6,8 +6,6 @@ using API.Entities;
 using API.Models;
 using API.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json.Linq;
 
 namespace API.Controllers {
     public class ChessStatsController : BaseApiController {

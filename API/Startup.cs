@@ -15,6 +15,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace API {
     public class Startup {
@@ -39,16 +41,16 @@ namespace API {
             services.AddDbContext<DataContext>(
                 dbContextOptions => dbContextOptions
                     .UseMySql(Environment.GetEnvironmentVariable("CHESS_DB"), serverVersion)
-                    // .UseMySql(_config.GetConnectionString("MariaDB"), serverVersion)
+                    // .UseMySql(Environment.GetEnvironmentVariable(_config.GetConnectionString("MariaDB")), serverVersion)
                     .EnableSensitiveDataLogging() // <-- These two calls are optional but help
                     .EnableDetailedErrors()       // <-- with debugging (remove for production).
             );
             services.AddScoped<IChessStatsService, ChessStatsService>();
 
-            services.AddControllers()
-                .AddNewtonsoftJson(); // Supports return newtonsoft json objects from controllers
+            services.AddControllers();
+                // .AddNewtonsoftJson(); // Supports return newtonsoft json objects from controllers
                                       // https://docs.microsoft.com/en-us/aspnet/core/web-api/advanced/formatting?view=aspnetcore-5.0#add-newtonsoftjson-based-json-format-support
-
+                // .AddJsonOptions(options => options.JsonSerializerOptions.PropertyNamingPolicy = null); // should make it PascalCase, does not if AddNewtonsoftJson is added. Also I don't even want PascalCase
             // services.AddSwaggerGen(c => {
             //     c.SwaggerDoc("v1", new OpenApiInfo { Title = "API", Version = "v1" });
             // });
