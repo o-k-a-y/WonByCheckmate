@@ -3,4 +3,4 @@
 <app-table [data]="data" [tableRows]="tableRows" [tableCols]="drawCols"></app-table>
  -->
 
- <app-wld-tables *ngFor="let timeClass of tables | keys" [wldTables]="tables[timeClass]" [timeClass]="'' + timeClass"></app-wld-tables>
+<app-time-class-tables *ngFor="let timeClass of tables | keys" [timeClassTables]="tables[timeClass]" [timeClass]="timeClass"></app-time-class-tables>

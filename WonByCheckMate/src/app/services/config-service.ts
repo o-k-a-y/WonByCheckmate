@@ -11,12 +11,11 @@ export class ConfigService {
         "daily": "🗓️"
     }
 
-    won = 'Won';
-    lost = 'Lost';
-    draw = 'Draw';
+    won = 'won';
+    lost = 'lost';
+    draw = 'draw';
 
-
-    private convertTimeControl(timeControl: string): string {
+    convertTimeControl(timeControl: string): string {
         // TODO: Use regex instead to convert
         // Is it a daily game such as 1/86400 (24 hours to make a move)
         if (timeControl.includes('/')) {
@@ -48,6 +47,17 @@ export class ConfigService {
         return this.convertSecondsToTime(timeControl);
     }
 
+
+    // Return emoji equivalent of the time class string
+    convertTimeClass(timeClass: string): string {
+        return this.timeClass[timeClass];
+    }
+
+    // Turn something like wonByResignation into Resignation for easier user readability
+    convertLabel(label: string) {
+        return label.split('By')[1];
+    }
+
     private convertSecondsToTime(seconds: string): string {
         const secondsPerMove = parseInt(seconds);
         if (secondsPerMove < 60) {
@@ -57,9 +67,4 @@ export class ConfigService {
             return `${minutesPerMove} ${minutesPerMove === 1 ? "minute" : "minutes"}`;
         }
     }
-
-    private convertTimeClass(timeClass: string): string {
-        return this.timeClass[timeClass];
-    }
-
 }

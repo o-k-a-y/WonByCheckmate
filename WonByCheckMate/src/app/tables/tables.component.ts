@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { ConfigService } from '../services/config-service';
 
 @Component({
   selector: 'app-tables',
@@ -10,64 +11,70 @@ export class TablesComponent implements OnInit {
 
   tables: {} = {};
 
-  constructor() {}
+  constructor(private configService: ConfigService) {}
 
   ngOnInit(): void {
-    const timeClasses = Object.keys(this.data);
+    this.tables = this.constructTables();
+    // console.log(this.tables);
+  }
 
-    // Refactor/change below loop to follow consistency
-    if (timeClasses.length <= 0) {
-      console.log('There is no data!')
-      return;
+  // Creates tables following this schema
+  /*
+    "won": {
+      "600": {
+        "wonByResignation": 0,
+        "wonByTimeout": 0,
+        "wonByCheckmate": 1,
+        "wonByAbandonment": 0
+        ...
+      },
+      "900": {
+        "wonByResignation": 0,
+        "wonByTimeout": 0,
+        "wonByCheckmate": 0,
+        "wonByAbandonment": 0
+        ...
+      },
+    },
+    "lost": {
+      ...
+    },
+    "draw": {
+      ...
     }
-
-    timeClasses.forEach(timeClass => {
-      this.tables[timeClass] = {};
-      // console.log(this.data[timeClass]);
+  */
+  private constructTables(): {} {
+    const tables = {};
+    Object.keys(this.data).forEach(timeClass => {
+      tables[timeClass] = {};
+      tables[timeClass]['won'] = {};
+      tables[timeClass]['lost'] = {};
+      tables[timeClass]['draw'] = {};
       
       Object.keys(this.data[timeClass]).forEach(timeControl => {
-        this.tables[timeClass][timeControl] = {};
-        this.tables[timeClass][timeControl]['won'] = {};
-        this.tables[timeClass][timeControl]['lost'] = {};
-        this.tables[timeClass][timeControl]['draw'] = {};
+        tables[timeClass]['won'][timeControl] = {};
+        tables[timeClass]['lost'][timeControl] = {};
+        tables[timeClass]['draw'][timeControl] = {};
 
         Object.keys(this.data[timeClass][timeControl]).forEach(result => {
           const resultAmount = this.data[timeClass][timeControl][result];
           
+          let outcome = '';
           if (result.includes('won')) {
-            this.tables[timeClass][timeControl]['won'][result] = resultAmount;
+            outcome = 'won';
           } else if (result.includes('lost')) {
-            this.tables[timeClass][timeControl]['lost'][result] = resultAmount;
+            outcome = 'lost';
           } else if (result.includes('draw')) {
-            this.tables[timeClass][timeControl]['draw'][result] = resultAmount;
+            outcome = 'draw';
           }
-        })
-
-        // TODO: Make this work
-        // this.tables[timeClass]['won'] = {};
-        // this.tables[timeClass]['lost'] = {};
-        // this.tables[timeClass]['draw'] = {};
-
-        // this.tables[timeClass]['won'][timeControl] = {};
-        // this.tables[timeClass]['lost'][timeControl] = {};
-        // this.tables[timeClass]['draw'][timeControl] = {};
-
-        // Object.keys(this.data[timeClass][timeControl]).forEach(result => {
-        //   const resultAmount = this.data[timeClass][timeControl][result];
           
-        //   if (result.includes('won')) {
-        //     this.tables[timeClass]['won'][timeControl][result] = resultAmount;
-        //   } else if (result.includes('lost')) {
-        //     this.tables[timeClass]['lost'][timeControl][result] = resultAmount;
-        //   } else if (result.includes('draw')) {
-        //     this.tables[timeClass]['draw'][timeControl][result] = resultAmount;
-        //   }
-        // })
+          // Modify the data so that wonByResignation -> Resignation for nicer display in the tables
+          result = this.configService.convertLabel(result);
+          tables[timeClass][outcome][timeControl][result] = resultAmount;
+        })
       })
     });
 
-    console.log(this.tables);
+    return tables;
   }
-
-
 }

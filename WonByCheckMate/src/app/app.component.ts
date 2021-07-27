@@ -27,11 +27,11 @@ export class AppComponent {
     this.httpError = false;
     this.doneParsing = false;
 
-    console.log(username);
+    // console.log(username);
 
     this.playerStatsService.getStats(username).subscribe(
       (stats: {}) => {
-        console.log(stats);
+        // console.log(stats);
         this.stats = stats;
         this.doneParsing = true;
       },

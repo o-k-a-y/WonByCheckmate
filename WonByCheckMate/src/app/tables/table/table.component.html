@@ -1,0 +1,21 @@
+<table class="table table-striped table-bordered table-hover">
+    <thead>
+        <tr>
+            <!-- Empty cell -->
+            <th class="table-light col-sm-1" scope="col">
+                {{title}}
+            </th>
+            <th class="table-primary" scope="col" *ngFor="let col of cols">
+                {{col}}
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let row of rows">
+            <th class="table-info" scope="row" >{{configService.convertTimeControl(row)}}</th>
+            <td *ngFor="let col of cols">
+                {{data[row][col]}}
+            </td>
+        </tr>    
+    </tbody>
+</table>
