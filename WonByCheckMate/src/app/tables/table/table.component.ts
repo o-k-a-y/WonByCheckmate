@@ -1,5 +1,4 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { KeysPipe } from 'src/app/pipes/keys.pipe';
 import { ConfigService } from 'src/app/services/config-service';
 
 @Component({

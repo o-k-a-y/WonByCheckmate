@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { ChessStats } from '../models/chess-stats.model';
 import { ConfigService } from '../services/config-service';
 
 @Component({
@@ -7,9 +8,10 @@ import { ConfigService } from '../services/config-service';
   styleUrls: ['./tables.component.scss']
 })
 export class TablesComponent implements OnInit {
-  @Input() data;
+  @Input() data!: ChessStats;
 
   tables: {} = {};
+  // tables: Map<string, object> = new Map<string, object>(); // could be used for type safety?
 
   constructor(private configService: ConfigService) {}
 
@@ -18,7 +20,9 @@ export class TablesComponent implements OnInit {
     // console.log(this.tables);
   }
 
-  // Creates tables following this schema
+
+  // Constructs data where each time class has won, lost, draw and each of those contain the time controls and respective results
+  // Each time class is structured as follows
   /*
     "won": {
       "600": {
@@ -45,6 +49,7 @@ export class TablesComponent implements OnInit {
   */
   private constructTables(): {} {
     const tables = {};
+
     Object.keys(this.data).forEach(timeClass => {
       tables[timeClass] = {};
       tables[timeClass]['won'] = {};

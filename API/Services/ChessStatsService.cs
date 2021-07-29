@@ -72,11 +72,11 @@ namespace API.Services {
             new Config("chess", "blitz", "180"),
             new Config("chess", "blitz", "300"),
             new Config("chess", "blitz", "480"), // this one isn't very common, remove maybe
-            new Config("chess", "blitz", "600"),
+            new Config("chess", "blitz", "600"), // important to note that blitz 600 was changed to rapid 600, but the old games will still have this configuration
             
             // Rapid
-            new Config("chess", "rapid", "900"), // 15 minute
             new Config("chess", "rapid", "600"), // 10 minute game
+            new Config("chess", "rapid", "900"), // 15 minute
             new Config("chess", "rapid", "1200"), // 20 minute
             new Config("chess", "rapid", "1800"), // 30 minute
             new Config("chess", "rapid", "3600"), // 1 hour

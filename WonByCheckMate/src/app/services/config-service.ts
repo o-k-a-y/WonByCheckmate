@@ -11,9 +11,37 @@ export class ConfigService {
         "daily": "🗓️"
     }
 
+    // TODO: Move to some const class/enum/etc
     won = 'won';
     lost = 'lost';
     draw = 'draw';
+
+    wonLabels: string[] = [
+        'wonByAbandonment',
+        'wonByCheckmate',
+        'wonByResignation',
+        'wonByTimeout'
+    ]
+
+    lostLabels: string[] = [
+        'lostByAbandonment',
+        'lostByCheckmate',
+        'lostByResignation',
+        'lostByTimeout'
+    ]
+
+    drawLabels: string[] = [
+        'drawBy50Move',
+        'drawByAgreement',
+        'drawByInsufficientMaterial',
+        'drawByRepetition',
+        'drawByStalemate',
+        'drawByTimeoutVsInsufficientMaterial'
+    ]
+
+    convertTitle(timeClass: string, timeControl: string): string {
+        return `${this.convertTimeClass(timeClass)} ${this.convertTimeControl(timeControl)}`;
+    }
 
     convertTimeControl(timeControl: string): string {
         // TODO: Use regex instead to convert
@@ -56,6 +84,27 @@ export class ConfigService {
     // Turn something like wonByResignation into Resignation for easier user readability
     convertLabel(label: string) {
         return label.split('By')[1];
+    }
+
+    // Return labels without the wonBy/lostBy/drawBy prefix 
+    getLabels(outcome: string): string[] {
+        switch (outcome) {
+            case this.won:
+                return this.wonLabels.map(label => {
+                    return label = this.convertLabel(label);
+                })
+            case this.lost:
+                return this.lostLabels.map(label => {
+                    return label = this.convertLabel(label);
+                })
+            case this.draw:
+                return this.drawLabels.map(label => {
+                    return label = this.convertLabel(label);
+                })
+            default:
+                return null;
+        }
+
     }
 
     private convertSecondsToTime(seconds: string): string {

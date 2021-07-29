@@ -17,10 +17,12 @@ export class WldPieChartComponent extends PieChartComponent {
     super.ngAfterViewInit();
 
     this.chart.options.onClick = (e, a, c) => {
+      // No data in the active element
       if (!a[0]) {
         return;
       }
-      console.log("clicked");
+      // console.log("clicked");
+      // If a valid index is clicked in the pie chart, emit an event
       const index = a[0].index;          
       if (index >= 0) {
         const label: string = this.chart.data.labels[index] as string;
