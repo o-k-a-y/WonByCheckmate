@@ -1,8 +1,4 @@
-<app-wld-pie-charts class="charts" *ngFor="let gameConfig of gameConfigs"
-    [data]="data[gameConfig]"
-    [wonLabels]="wonLabels"
-    [lostLabels]="lostLabels"
-    [drawLabels]="drawLabels"
-    [gameConfig]="gameConfig"
-></app-wld-pie-charts>
-<!-- <app-pie-chart *ngFor="let gameConfig of gameConfigs" [data]="data[gameConfig]" [labels]="labels" [title]="gameConfig"></app-pie-chart> -->
+<app-time-class-pie-charts *ngFor="let timeClass of timeClasses"
+    [data]="data[timeClass]"
+    [timeClass]="timeClass">
+</app-time-class-pie-charts>

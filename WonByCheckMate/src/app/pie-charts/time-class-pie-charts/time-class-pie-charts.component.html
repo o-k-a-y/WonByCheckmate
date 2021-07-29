@@ -1,0 +1,6 @@
+<p>{{timeClass}}</p>
+<app-wld-pie-charts class="charts" *ngFor="let timeControl of timeControls"
+    [data]="data[timeControl]"
+    [timeClass]="timeClass"
+    [timeControl]="timeControl"
+></app-wld-pie-charts>

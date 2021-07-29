@@ -9,8 +9,14 @@ export class PlayerStatsService {
     baseUrl: string = "https://localhost:5001/api/chessstats/";
     constructor(private http: HttpClient) {}
 
-    getStats(username: string): Observable<JSON> {
-        return this.http.get<JSON>(this.baseUrl + username);
+    getStats(username: string): Observable<{}> {
+        return this.http.get<{}>(this.baseUrl + username);
+    }
+
+    // TODO:
+    // Returns json but as a flattened json
+    flattenData(data: {}): {} {
+        return null;
     }
 
 }

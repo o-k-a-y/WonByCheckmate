@@ -2,17 +2,19 @@
     <thead>
         <tr>
             <!-- Empty cell -->
-            <th class="table-light col-sm-1" scope="col"></th>
-            <th class="table-primary" scope="col" *ngFor="let tableCol of tableCols">
-                {{tableCol}}
+            <th class="table-light col-sm-1" scope="col">
+                {{title}}
+            </th>
+            <th class="table-primary" scope="col" *ngFor="let col of cols">
+                {{col}}
             </th>
         </tr>
     </thead>
     <tbody>
-        <tr *ngFor="let tableRow of tableRows">
-            <th class="table-info" scope="row" >{{tableRow}}</th>
-            <td *ngFor="let tableCol of tableCols">
-                {{data[tableRow][tableCol]}}
+        <tr *ngFor="let row of rows">
+            <th class="table-warning" scope="row" >{{configService.convertTimeControl(row)}}</th>
+            <td *ngFor="let col of cols">
+                {{data[row][col]}}
             </td>
         </tr>    
     </tbody>

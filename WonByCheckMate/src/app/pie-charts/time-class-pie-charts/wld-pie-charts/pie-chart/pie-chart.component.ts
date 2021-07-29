@@ -8,8 +8,8 @@ import { Chart } from 'chart.js'
 })
 export class PieChartComponent implements OnInit, AfterViewInit {
 
-  @Input() labels: string[] = [];
   @Input() data: {} = {};
+  @Input() labels: string[] = [];
   @Input() title: string;
 
   // @Output() clickedSection: EventEmitter<string> = new EventEmitter<string>();
@@ -40,6 +40,9 @@ export class PieChartComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
+    // console.log(this.data);
+    // console.log(this.labels);
+    // console.log(this.title);
   }
 
 

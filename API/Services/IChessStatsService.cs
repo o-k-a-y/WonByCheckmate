@@ -9,6 +9,7 @@ using Newtonsoft.Json.Linq;
 namespace API.Services {
     public interface IChessStatsService {
         Task<ChessStats> GetStats(string username);
+        // Task<ChessStats> GetStats(string username);
         Task<IEnumerable<Game>> GetGames(string username);
     }
 }

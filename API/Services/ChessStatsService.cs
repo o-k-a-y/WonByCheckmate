@@ -72,11 +72,11 @@ namespace API.Services {
             new Config("chess", "blitz", "180"),
             new Config("chess", "blitz", "300"),
             new Config("chess", "blitz", "480"), // this one isn't very common, remove maybe
-            new Config("chess", "blitz", "600"),
+            new Config("chess", "blitz", "600"), // important to note that blitz 600 was changed to rapid 600, but the old games will still have this configuration
             
             // Rapid
-            new Config("chess", "rapid", "900"), // 15 minute
             new Config("chess", "rapid", "600"), // 10 minute game
+            new Config("chess", "rapid", "900"), // 15 minute
             new Config("chess", "rapid", "1200"), // 20 minute
             new Config("chess", "rapid", "1800"), // 30 minute
             new Config("chess", "rapid", "3600"), // 1 hour
@@ -285,54 +285,137 @@ namespace API.Services {
 
         // TODO: Once tables are separated with User table that contains Game table reference, modify LINQ queries to return updated structure according to schema
         // TODO: The LINQ queries used are probably not efficient at all
+        // TODO: Some way to specify rules in case in the future different chess rules besides "chess" are allowed (probably not)
         private async Task<ChessStats> BuildStatsFromDatabase(string username) {
 
-            ChessStats stats = new ChessStats();
-            stats.stats = new JObject();
+            // ChessStats stats = new ChessStats();
+            // stats.stats = new JObject();
 
             // TODO: Shouldn't be storing the entire database in memory, 
             // improve the performance of the database and then change code back to multiple database queries
-            List<Game> games = await _context.Games.Select(game => 
+            List<Game> games = await _context.Games.Select(game =>
                 new Game {
                     Username = game.Username,
                     Result = game.Result,
                     TimeClass = game.TimeClass,
                     TimeControl = game.TimeControl,
                     Rules = game.Rules
-            }).ToListAsync();
+                }).ToListAsync();
 
-            // TODO: maybe return a more structured JSON
+
+            // TODO: Some way to abstract to separate objects?
+            ChessStats stats = new ChessStats();
+
+            // var dict = timeClass switch
             // {
-                // bullet: 
-                    // 30: {}
-                    // 60: {}
-                // daily:
-                // 
-            // }
+            //     "blitz" => rootObject.Blitz,
+            //     etc.
+            // };
+
+            // TODO: When adding filtering on game configs, replace validGameConfigurations with that list/selection (i.e. user only wants blitz stats, or a subset of each)
             foreach (Config config in validGameConfigurations) {
-                // chess:30:bullet
-                // List<string> c = new List<string>(config.Split(':'));
-                // string timeClass = c[2];
-                // string timeControl = c[1];
-                // string rules = c[0];
                 string rules = config.Rules;
                 string timeClass = config.TimeClass;
                 string timeControl = config.TimeControl;
                 var resultTypes = Enum.GetNames(typeof(GameResultType));
-                
-                stats.stats[config.ToString()] = new JObject();
-                // int count = 0;
-                foreach (var result in resultTypes) {
-                    // count += await _context.Games.Where(game => game.Username == this.username && game.Result == result && game.TimeClass == timeClass && game.TimeControl == timeControl && game.Rules == rules).CountAsync();
-                    stats.stats[config.ToString()][result] = games.Count(game => game.Username == username && game.Result == result && game.TimeClass == timeClass && game.TimeControl == timeControl && game.Rules == rules);
-                    // TODO: Uncomment/fix when database is improved
-                    // stats.stats[config][result] = await _context.Games.CountAsync(game => game.Username == username && game.Result == result && game.TimeClass == timeClass && game.TimeControl == timeControl && game.Rules == rules);
 
+                foreach (var result in resultTypes) {
+                    int count = games.Count(game => game.Username == username && game.Result == result && game.TimeClass == timeClass && game.TimeControl == timeControl && game.Rules == rules);
+                    Dictionary<string, ResultStats> tc = GetTimeClass(stats, timeClass);
+
+                    if (!tc.ContainsKey(timeControl)) {
+                        tc.Add(timeControl, new ResultStats());
+                    }
+                    switch (result) {
+                        case nameof(GameResultType.WonByResignation):
+                            tc[timeControl].WonByResignation = count;
+                            break;
+                        case nameof(GameResultType.WonByTimeout):
+                            tc[timeControl].WonByTimeout = count;
+                            break;
+                        case nameof(GameResultType.WonByCheckmate):
+                            tc[timeControl].WonByCheckmate = count;
+                            break;
+                        case nameof(GameResultType.WonByAbandonment):
+                            tc[timeControl].WonByAbandonment = count;
+                            break;
+                        case nameof(GameResultType.DrawByAgreement):
+                            tc[timeControl].DrawByAgreement = count;
+                            break;
+                        case nameof(GameResultType.DrawByStalemate):
+                            tc[timeControl].DrawByStalemate = count;
+                            break;
+                        case nameof(GameResultType.DrawByRepetition):
+                            tc[timeControl].DrawByRepetition = count;
+                            break;
+                        case nameof(GameResultType.DrawByInsufficientMaterial):
+                            tc[timeControl].DrawByInsufficientMaterial = count;
+                            break;
+                        case nameof(GameResultType.DrawByTimeoutVsInsufficientMaterial):
+                            tc[timeControl].DrawByTimeoutVsInsufficientMaterial = count;
+                            break;
+                        case nameof(GameResultType.DrawBy50Move):
+                            tc[timeControl].DrawBy50Move = count;
+                            break;
+                        case nameof(GameResultType.LostByResignation):
+                            tc[timeControl].LostByResignation = count;
+                            break;
+                        case nameof(GameResultType.LostByTimeout):
+                            tc[timeControl].LostByTimeout = count;
+                            break;
+                        case nameof(GameResultType.LostByCheckmate):
+                            tc[timeControl].LostByCheckmate = count;
+                            break;
+                        case nameof(GameResultType.LostByAbandonment):
+                            tc[timeControl].LostByAbandonment = count;
+                            break;
+                    }
                 }
-                // Console.WriteLine($"Count for {config} = {count}");
             }
 
+            // if (!stats.ContainsKey(timeClass)) {
+            //     stats.Add(timeClass, new Dictionary<string, Dictionary<string, int>>());
+            //     stats[timeClass].Add(timeControl, new Dictionary<string, int>());
+            // } else {
+            //     if (!stats[timeClass].ContainsKey(timeControl)) {
+            //         stats[timeClass].Add(timeControl, new Dictionary<string, int>());
+            //     }
+            // }
+
+            // foreach (var result in resultTypes) {
+            //     if (!stats[timeClass][timeControl].ContainsKey(result)) {
+            //         int count = games.Count(game => game.Username == username && game.Result == result && game.TimeClass == timeClass && game.TimeControl == timeControl && game.Rules == rules);
+            //         stats[timeClass][timeControl].Add(result, count);
+            //     }
+            // }
+            // }
+
             return stats;
+        }
+
+        // The single time class property as defined on the ChessStats class so we can avoid unnecessary switch statements
+        private Dictionary<string, ResultStats> GetTimeClass(ChessStats stats, string timeClass) {
+            return timeClass switch
+            {
+                "bullet" => stats.Bullet,
+                "blitz" => stats.Blitz,
+                "rapid" => stats.Rapid,
+                "daily" => stats.Daily,
+                _  => null
+            };
+
+            // switch (timeClass) {
+            //     case "bullet":
+            //         return stats.Bullet;
+            //     case "blitz":
+            //         return stats.Blitz;
+            //     case "rapid":
+            //         return stats.Rapid;
+            //     case "daily":
+            //         return stats.Daily;
+            //     default:
+            //         return null;
+            // }
         }
 
         // Epoch time of most recent game played

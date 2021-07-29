@@ -16,6 +16,5 @@ export class UserFormComponent implements OnInit {
 
   formSubmitted(username: any) {
     this.onSubmitForm.emit(username.username);
-    console.log(username);
   }
 }

@@ -19,9 +19,8 @@ namespace API.Data {
             return HashCode.Combine(Rules, TimeClass, TimeControl);
         }
 
-        // TODO: Put timeclass before time control once everything is fixed
         public override string ToString() {
-            return $"{Rules}:{TimeControl}:{TimeClass}";
+            return $"{Rules}:{TimeClass}:{TimeControl}";
         }
     }
 }

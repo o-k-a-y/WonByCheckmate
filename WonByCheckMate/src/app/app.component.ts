@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { ChessStats } from './models/chess-stats.model';
 import { PlayerStatsService } from './services/player-stats.service';
 
 @Component({
@@ -9,10 +10,9 @@ import { PlayerStatsService } from './services/player-stats.service';
 export class AppComponent {
   title = 'WonByCheckmate';
 
-  httpError: boolean;
-  doneParsing: boolean;
-  stats: JSON;
-  configurations;
+  httpError: boolean = false;
+  doneParsing: boolean = false;
+  stats!: ChessStats;
 
   displayTables: boolean = true;
 
@@ -28,13 +28,12 @@ export class AppComponent {
     this.httpError = false;
     this.doneParsing = false;
 
-    console.log(username);
+    // console.log(username);
 
     this.playerStatsService.getStats(username).subscribe(
-      (stats: JSON) => {
-        console.log(stats);
+      (stats: ChessStats) => {
+        // console.log(stats);
         this.stats = stats;
-        this.configurations = Object.keys(stats['stats']);
         this.doneParsing = true;
       },
       error => {
