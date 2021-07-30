@@ -1,5 +1,5 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
-import { Chart } from 'chart.js'
+import { AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
+import { Chart } from 'chart.js';
 
 @Component({
   selector: 'app-pie-chart',
@@ -12,8 +12,6 @@ export class PieChartComponent implements OnInit, AfterViewInit {
   @Input() labels: string[] = [];
   @Input() title: string;
 
-  // @Output() clickedSection: EventEmitter<string> = new EventEmitter<string>();
-  
   @ViewChild('myChart') chartRef: ElementRef;
 
 
@@ -65,17 +63,6 @@ export class PieChartComponent implements OnInit, AfterViewInit {
         }]
       },
       options: {
-        // onClick: (e, a, c) => {
-        //   if (!a[0]) {
-        //     return;
-        //   }
-        //   console.log("clicked");
-        //   const index = a[0].index;          
-        //   if (index >= 0) {
-        //     const label: string = this.chart.data.labels[index] as string;
-        //     this.clickedSection.emit(label);
-        //   }
-        // },
         responsive: true,
         maintainAspectRatio: false,
         plugins: {

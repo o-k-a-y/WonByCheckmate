@@ -292,7 +292,7 @@ namespace API.Services {
             // stats.stats = new JObject();
 
             // TODO: Shouldn't be storing the entire database in memory, 
-            // improve the performance of the database and then change code back to multiple database queries
+            // Improve the performance of the database and then change code back to multiple database queries on the DataContext
             List<Game> games = await _context.Games.Select(game =>
                 new Game {
                     Username = game.Username,
@@ -305,12 +305,6 @@ namespace API.Services {
 
             // TODO: Some way to abstract to separate objects?
             ChessStats stats = new ChessStats();
-
-            // var dict = timeClass switch
-            // {
-            //     "blitz" => rootObject.Blitz,
-            //     etc.
-            // };
 
             // TODO: When adding filtering on game configs, replace validGameConfigurations with that list/selection (i.e. user only wants blitz stats, or a subset of each)
             foreach (Config config in validGameConfigurations) {

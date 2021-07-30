@@ -13,7 +13,7 @@ export class PieChartsComponent implements OnInit {
   timeClasses: string[] = [];
 
   pieChartData: {} = {};
-  
+
   constructor(public configService: ConfigService) { }
 
   ngOnInit(): void {

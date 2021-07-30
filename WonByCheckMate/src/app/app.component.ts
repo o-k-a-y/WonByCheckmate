@@ -16,9 +16,7 @@ export class AppComponent {
 
   displayTables: boolean = true;
 
-  constructor(public playerStatsService: PlayerStatsService) {
-    
-  }
+  constructor(public playerStatsService: PlayerStatsService) {}
 
   ngOnInit() {
   }
@@ -46,5 +44,5 @@ export class AppComponent {
   toggleCharts() {
     this.displayTables = !this.displayTables;
   }
-  
+
 }

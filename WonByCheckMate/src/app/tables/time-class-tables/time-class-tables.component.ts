@@ -21,5 +21,4 @@ export class TimeClassTablesComponent implements OnInit {
     this.lostTable = this.timeClassTables[this.configService.lost];
     this.drawTable = this.timeClassTables[this.configService.draw];
   }
-
 }

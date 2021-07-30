@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { PieChartComponent } from '../pie-chart/pie-chart.component';
 
 @Component({
@@ -30,5 +30,4 @@ export class WldPieChartComponent extends PieChartComponent {
       }
     }
   }
-
 }

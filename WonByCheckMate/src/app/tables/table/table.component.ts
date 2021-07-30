@@ -26,6 +26,5 @@ export class TableComponent implements OnInit {
       this.cols = Object.keys(this.data[row]);
       break;
     }
-
   }
 }

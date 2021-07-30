@@ -17,5 +17,4 @@ export class TimeClassPieChartsComponent implements OnInit {
     this.timeControls = Object.keys(this.data);
     // console.log(this.data);
   }
-
 }

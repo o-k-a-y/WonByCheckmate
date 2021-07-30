@@ -57,18 +57,4 @@ export class WldPieChartsComponent implements OnInit {
   toggleShowDetailedCharts() {
     this.shouldShowDetailedCharts = !this.shouldShowDetailedCharts;
   }
-
-  // TODO: Properly convert titles
-  // convertTitle(gameConfig: string): string {
-  //   console.log(gameConfig);
-  //   const gameConfigArr = gameConfig.split(':');
-  //   const timeControl = this.convertTimeControl(gameConfigArr[1]);
-  //   const timeClass = this.convertTimeClass(gameConfigArr[2]);
-
-  //   return `${timeClass} ${timeControl}`;
-  // }
-
-
-  
-
 }
