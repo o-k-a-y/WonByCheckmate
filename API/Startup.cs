@@ -4,6 +4,8 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using API.Data;
+using API.Extensions;
+using API.Middleware;
 using API.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -25,7 +27,7 @@ namespace API {
             _config = config;
         }
 
-        
+
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services) {
@@ -34,7 +36,7 @@ namespace API {
             //     options.UseSqlite(_config.GetConnectionString("DefaultConnection"));
             // });
 
-            
+
             var serverVersion = new MariaDbServerVersion(new Version(10, 5, 0));
 
             // Replace 'YourDbContext' with the name of your own DbContext derived class.
@@ -48,9 +50,9 @@ namespace API {
             services.AddScoped<IChessStatsService, ChessStatsService>();
 
             services.AddControllers();
-                // .AddNewtonsoftJson(); // Supports return newtonsoft json objects from controllers
-                                      // https://docs.microsoft.com/en-us/aspnet/core/web-api/advanced/formatting?view=aspnetcore-5.0#add-newtonsoftjson-based-json-format-support
-                // .AddJsonOptions(options => options.JsonSerializerOptions.PropertyNamingPolicy = null); // should make it PascalCase, does not if AddNewtonsoftJson is added. Also I don't even want PascalCase
+            // .AddNewtonsoftJson(); // Supports return newtonsoft json objects from controllers
+            // https://docs.microsoft.com/en-us/aspnet/core/web-api/advanced/formatting?view=aspnetcore-5.0#add-newtonsoftjson-based-json-format-support
+            // .AddJsonOptions(options => options.JsonSerializerOptions.PropertyNamingPolicy = null); // should make it PascalCase, does not if AddNewtonsoftJson is added. Also I don't even want PascalCase
             // services.AddSwaggerGen(c => {
             //     c.SwaggerDoc("v1", new OpenApiInfo { Title = "API", Version = "v1" });
             // });
@@ -66,6 +68,9 @@ namespace API {
             //     app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "API v1"));
             // }
 
+            // Only allow valid game configurations
+            app.FilterGameConfigs();
+
             app.UseHttpsRedirection();
 
             app.UseRouting();
@@ -77,6 +82,7 @@ namespace API {
             app.UseEndpoints(endpoints => {
                 endpoints.MapControllers();
             });
+
         }
     }
 }
