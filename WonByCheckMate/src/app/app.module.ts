@@ -20,6 +20,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatCardModule } from '@angular/material/card';
 import { MatRadioModule } from '@angular/material/radio';
 import { CheckboxComponent } from './user-form/checkbox/checkbox.component';
+import { StatsGraphsComponent } from './stats-graphs/stats-graphs.component';
 
 
 @NgModule({
@@ -35,7 +36,8 @@ import { CheckboxComponent } from './user-form/checkbox/checkbox.component';
     WldPieChartComponent,
     TimeClassTablesComponent,
     TimeClassPieChartsComponent,
-    CheckboxComponent
+    CheckboxComponent,
+    StatsGraphsComponent
   ],
   imports: [
     BrowserModule,
