@@ -8,12 +8,12 @@ import { ConfigService } from 'src/app/services/config-service';
 })
 export class TableComponent implements OnInit {
   @Input() data: any = {};
-  @Input() timeClass: string;
-  @Input() outcome: string;
+  @Input() timeClass: string = "";
+  @Input() outcome: string = "";
 
   rows: string[] = []; // time controls
   cols: string[] = []; // results
-  title: string;
+  title: string = "";
 
   constructor(public configService: ConfigService) { }
 

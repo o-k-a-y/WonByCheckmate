@@ -4,12 +4,19 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class ConfigService {
-  timeClass: {} = {
-    "bullet": "🚀",
-    "blitz": "⚡",
-    "rapid": "⏲️",
-    "daily": "🗓️"
+  timeClassEmoji: Record<string, string> = {
+    'bullet': '🚀',
+    'blitz': '⚡',
+    'rapid': '⏲️',
+    'daily': '🗓️'
   }
+
+  timeClasses: string[] = [
+    'bullet',
+    'blitz',
+    'rapid',
+    'daily'
+  ]
 
   // TODO: Move to some const class/enum/etc
   won = 'won';
@@ -78,7 +85,7 @@ export class ConfigService {
 
   // Return emoji equivalent of the time class string
   convertTimeClass(timeClass: string): string {
-    return this.timeClass[timeClass];
+    return this.timeClassEmoji[timeClass];
   }
 
   // Turn something like wonByResignation into Resignation for easier user readability
@@ -87,7 +94,7 @@ export class ConfigService {
   }
 
   // Return labels without the wonBy/lostBy/drawBy prefix 
-  getLabels(outcome: string): string[] {
+  getLabels(outcome: string): string[] | null {
     switch (outcome) {
       case this.won:
         return this.wonLabels.map(label => {

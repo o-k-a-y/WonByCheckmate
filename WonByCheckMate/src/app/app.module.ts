@@ -15,6 +15,12 @@ import { TableComponent } from './tables/table/table.component';
 import { KeysPipe } from './pipes/keys.pipe';
 import { TimeClassTablesComponent } from './tables/time-class-tables/time-class-tables.component';
 import { TimeClassPieChartsComponent } from './pie-charts/time-class-pie-charts/time-class-pie-charts.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatCardModule } from '@angular/material/card';
+import { MatRadioModule } from '@angular/material/radio';
+import { CheckboxComponent } from './user-form/checkbox/checkbox.component';
+
 
 @NgModule({
   declarations: [
@@ -28,13 +34,18 @@ import { TimeClassPieChartsComponent } from './pie-charts/time-class-pie-charts/
     WldPieChartsComponent,
     WldPieChartComponent,
     TimeClassTablesComponent,
-    TimeClassPieChartsComponent
+    TimeClassPieChartsComponent,
+    CheckboxComponent
   ],
   imports: [
     BrowserModule,
     HttpClientModule,
     FormsModule,
-    ChartsModule
+    ChartsModule,
+    BrowserAnimationsModule,
+    MatCheckboxModule, // TODO: split material modules into a separate module to import here
+    MatCardModule,
+    MatRadioModule
   ],
   providers: [],
   bootstrap: [AppComponent]

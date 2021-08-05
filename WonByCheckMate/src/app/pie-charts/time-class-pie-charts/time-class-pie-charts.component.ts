@@ -7,8 +7,8 @@ import { Component, Input, OnInit } from '@angular/core';
   styleUrls: ['./time-class-pie-charts.component.scss']
 })
 export class TimeClassPieChartsComponent implements OnInit {
-  @Input() data;
-  @Input() timeClass;
+  @Input() data: any; // TODO: assign a type
+  @Input() timeClass: string = "";
 
   timeControls: string[] = [];
   constructor() { }
