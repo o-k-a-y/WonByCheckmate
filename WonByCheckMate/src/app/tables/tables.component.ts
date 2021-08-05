@@ -48,7 +48,7 @@ export class TablesComponent implements OnInit {
     }
   */
   private constructTables(): {} {
-    const tables = {};
+    const tables: {} = {};
 
     Object.keys(this.data).forEach(timeClass => {
       tables[timeClass] = {};
