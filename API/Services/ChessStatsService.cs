@@ -289,8 +289,9 @@ namespace API.Services {
                 string rules = game.Value<string>("rules");
                 string timeControl = game.Value<string>("time_control");
                 string timeClass = game.Value<string>("time_class");
-                Config config = new Config(rules, timeControl, timeClass);
+                Config config = new Config(rules, timeClass, timeControl);
                 // string configuration = $"{rules}:{timeControl}:{timeClass}";
+
 
                 // Only check valid game configurations
                 if (!validGameConfigurations.Contains(config)) {

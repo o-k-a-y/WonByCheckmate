@@ -2,9 +2,9 @@ using System;
 
 namespace API.Data {
     public class Config {
-        public string Rules { get; set; }
-        public string TimeClass { get; set; }
-        public string TimeControl { get; set; }
+        public string Rules { get; private set; }
+        public string TimeClass { get; private set; }
+        public string TimeControl { get; private set; }
 
         public Config(string rules, string timeClass, string timeControl) => (Rules, TimeClass, TimeControl) = (rules, timeClass, timeControl);
 

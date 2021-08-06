@@ -15,12 +15,24 @@ namespace API.Middleware {
         }
         public async Task InvokeAsync(HttpContext context, IChessStatsService svc) {
             
-            List<string> gameConfigs = new List<string>(context.Request.Query["config"].ToArray());
-            if (gameConfigs != null) {
-                foreach (string gameConfig in gameConfigs) {
-                    Console.WriteLine(gameConfig);
-                }
-            }
+            string gameConfigs = context.Request.Query["configs"];
+
+            // TODO: Actually implement the middleware and handle errors
+            // if (gameConfigs != null) {
+            //     string[] configArr = gameConfigs.Split(',');
+            //     Console.WriteLine(configArr);
+            //     foreach (string config in configArr) {
+            //         string[] configParts = config.Split(':');
+            //         if (configParts.Length != 3) {
+            //             return NotFound();
+            //         }
+
+            //         if (!ValidGameConfigurations.Contains(new Config(configParts[0], configParts[1], configParts[2]))) {
+            //             return NotFound();
+            //         }
+            //         Console.WriteLine(config);
+            //     }
+            // }
 
             // Call the next delegate/middleware in the pipeline
             await _next(context);
