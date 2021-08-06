@@ -24,8 +24,6 @@ namespace API.Services {
 
 
         // All known configurations we care about (double check to make sure none are missing)
-        // This set is used when a game is being parsed to see if we even want to parse results further
-        private readonly ValidGameConfigurations validGameConfigurations = new ValidGameConfigurations();
 
         public ChessStatsService(IHttpClientFactory httpFactory, DataContext context) {
             _context = context;
@@ -83,9 +81,6 @@ namespace API.Services {
         // TODO: Some way to specify rules in case in the future different chess rules besides "chess" are allowed (probably not)
         private async Task<ChessStats> BuildStatsFromDatabase(string username) {
 
-            // ChessStats stats = new ChessStats();
-            // stats.stats = new JObject();
-
             // TODO: Shouldn't be storing the entire database in memory, 
             // Improve the performance of the database and then change code back to multiple database queries on the DataContext
             List<Game> games = await _context.Games.Select(game =>
@@ -102,7 +97,7 @@ namespace API.Services {
             ChessStats stats = new ChessStats();
 
             // TODO: When adding filtering on game configs, replace validGameConfigurations with that list/selection (i.e. user only wants blitz stats, or a subset of each)
-            foreach (Config config in validGameConfigurations.Configs()) {
+            foreach (Config config in ValidGameConfigurations.Configs()) {
                 string rules = config.Rules;
                 string timeClass = config.TimeClass;
                 string timeControl = config.TimeControl;
@@ -294,14 +289,9 @@ namespace API.Services {
 
 
                 // Only check valid game configurations
-                if (!validGameConfigurations.Contains(config)) {
+                if (!ValidGameConfigurations.Contains(config)) {
                     continue;
                 }
-
-                // // Only check valid game configurations
-                // if (!validGameConfigurations.Contains(configuration)) {
-                //     continue;
-                // }
 
                 // Determine outcome
                 JObject white = game.Value<JObject>("white");

@@ -4,8 +4,9 @@ using API.Data;
 namespace API.Models {
     // All known configurations we care about
     // Each config follows the format rules:time class:time control
-    public class ValidGameConfigurations {
-        private readonly HashSet<Config> validGameConfigurations = new HashSet<Config> {
+    // This set is used when a game is being parsed to see if we even want to parse results further
+    public static class ValidGameConfigurations {
+        private static readonly HashSet<Config> validGameConfigurations = new HashSet<Config> {
             
             // Bullet
             // "chess:10:bullet", // doesn't exist?
@@ -37,11 +38,12 @@ namespace API.Models {
             new Config("chess", "daily", "1/1209600"), // 14 days
         };
 
-        public bool Contains(Config config) {
-            return this.validGameConfigurations.Contains(config);
+        public static bool Contains(Config config) {
+            bool res = validGameConfigurations.Contains(config);
+            return validGameConfigurations.Contains(config);
         }
 
-        public IEnumerable<Config> Configs() {
+        public static IEnumerable<Config> Configs() {
             foreach (Config config in validGameConfigurations) {
                 yield return config;
             }

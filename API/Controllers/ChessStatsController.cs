@@ -25,7 +25,6 @@ namespace API.Controllers {
         // The parameter is renamed to config so something like ?config=1&config=2&config=3 is possible
         [HttpGet("{username}")]
         public async Task<ActionResult<ChessStats>> GetStats(string username, string configs) {
-            ValidGameConfigurations validGameConfigurations = new ValidGameConfigurations();
             if (configs != null) {
                 string[] configArr = configs.Split(',');
                 Console.WriteLine(configArr);
@@ -36,7 +35,7 @@ namespace API.Controllers {
                     }
 
                     // TODO: create some TryParse method on Config to see if the object was created successfully
-                    if (!validGameConfigurations.Contains(new Config(configParts[0], configParts[1], configParts[2]))) {
+                    if (!ValidGameConfigurations.Contains(new Config(configParts[0], configParts[1], configParts[2]))) {
                         return NotFound();
                     }
                     Console.WriteLine(config);
