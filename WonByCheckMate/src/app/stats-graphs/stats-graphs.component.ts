@@ -7,13 +7,13 @@ import { ChessStats } from '../models/chess-stats.model';
   styleUrls: ['./stats-graphs.component.scss']
 })
 export class StatsGraphsComponent implements AfterViewInit {
-  @Output() rendered: EventEmitter<boolean> = new EventEmitter<boolean>();
-  @Input() stats: ChessStats
+  @Output() rendered: EventEmitter<any> = new EventEmitter();
+  @Input() stats!: ChessStats
   
   displayTables: boolean = true;
   
   ngAfterViewInit(): void {
-    this.rendered.emit(true);
+    this.rendered.emit(null);
   }
 
   toggleCharts() {
