@@ -9,14 +9,19 @@ export class ConfigService {
     'blitz': '⚡',
     'rapid': '⏲️',
     'daily': '🗓️'
-  }
+  };
 
   timeClasses: string[] = [
     'bullet',
     'blitz',
     'rapid',
     'daily'
-  ]
+  ];
+
+  // Other rules include chess variants like bughouse that most likely won't be supported, but if are, would be added here
+  rules: Record<string, string> = {
+    chess: 'chess'
+  };
 
   // TODO: Move to some const class/enum/etc
   won = 'won';
@@ -28,14 +33,14 @@ export class ConfigService {
     'wonByCheckmate',
     'wonByResignation',
     'wonByTimeout'
-  ]
+  ];
 
   lostLabels: string[] = [
     'lostByAbandonment',
     'lostByCheckmate',
     'lostByResignation',
     'lostByTimeout'
-  ]
+  ];
 
   drawLabels: string[] = [
     'drawBy50Move',
@@ -44,7 +49,7 @@ export class ConfigService {
     'drawByRepetition',
     'drawByStalemate',
     'drawByTimeoutVsInsufficientMaterial'
-  ]
+  ];
 
   convertTitle(timeClass: string, timeControl: string): string {
     return `${this.convertTimeClass(timeClass)} ${this.convertTimeControl(timeControl)}`;

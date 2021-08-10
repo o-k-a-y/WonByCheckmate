@@ -1,5 +1,6 @@
 import { Component, ElementRef, SimpleChange, ViewChild } from '@angular/core';
 import { ChessStats } from './models/chess-stats.model';
+import { UsernameRequest } from './models/username-request.model';
 import { PlayerStatsService } from './services/player-stats.service';
 
 @Component({
@@ -26,13 +27,13 @@ export class AppComponent {
   }
 
 
-  fetchPlayerStats(username: string) {
+  fetchPlayerStats(request: UsernameRequest) {
     this.httpError = false;
     this.doneParsing = false;
 
     // console.log(username);
 
-    this.playerStatsService.getStats(username).subscribe(
+    this.playerStatsService.getStats(request).subscribe(
       (stats: ChessStats) => {
         // console.log(stats);
         this.stats = stats;

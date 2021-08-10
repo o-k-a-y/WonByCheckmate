@@ -24,7 +24,7 @@ namespace API.Controllers {
         // [FromQuery(Name = "config")] allows passing multiple query parameters with the same key
         // The parameter is renamed to config so something like ?config=1&config=2&config=3 is possible
         [HttpGet("{username}")]
-        public async Task<ActionResult<ChessStats>> GetStats(string username, string configs) {
+        public async Task<ActionResult<ChessStats>> GetStats(string username, [FromQuery] string configs) {
             if (configs != null) {
                 string[] configArr = configs.Split(',');
                 Console.WriteLine(configArr);
