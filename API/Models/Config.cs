@@ -1,6 +1,6 @@
 using System;
 
-namespace API.Data {
+namespace API.Models {
     public class Config : IEquatable<Config> {
         public string Rules { get; private set; }
         public string TimeClass { get; private set; }
@@ -19,6 +19,35 @@ namespace API.Data {
                 TimeControl.Equals(other.TimeControl);
         }
 
+
+        // Try to parse the string equivalent of a config object such as "chess:bullet:30" to a valid Config object
+        public static bool TryParse(string configStr, out Config config) {
+            string[] configArr = configStr.Split(':');
+            if (configArr.Length != 3) {
+                config = null;
+                return false;
+            }
+
+            config = new Config(configArr[0], configArr[1], configArr[2]);
+
+            if (ValidGameConfigurations.Contains(config)) {
+                return true;
+            } else {
+                config = null;
+                return false;
+            }
+        }
+
+        public static bool TryParse(string rules, string timeClass, string timeControl, out Config config) {
+            config = new Config(rules, timeClass, timeControl);
+
+            if (ValidGameConfigurations.Contains(config)) {
+                return true;
+            } else {
+                config = null;
+                return false;
+            }
+        }
         public override int GetHashCode() {
             return HashCode.Combine(Rules, TimeClass, TimeControl);
         }

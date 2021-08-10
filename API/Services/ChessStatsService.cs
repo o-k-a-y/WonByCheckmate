@@ -30,11 +30,11 @@ namespace API.Services {
             _client = httpFactory.CreateClient();
         }
 
-        public async Task<ChessStats> GetStats(string username) {
+        public async Task<ChessStats> GetStats(string username, IList<Config> configs) {
             // username = username.ToLower();
             await UpdateGamesIfNeeded(username);
 
-            return await BuildStatsFromDatabase(username);
+            return await BuildStatsFromDatabase(username, configs);
         }
 
 
@@ -79,7 +79,7 @@ namespace API.Services {
         // TODO: Once tables are separated with User table that contains Game table reference, modify LINQ queries to return updated structure according to schema
         // TODO: The LINQ queries used are probably not efficient at all
         // TODO: Some way to specify rules in case in the future different chess rules besides "chess" are allowed (probably not)
-        private async Task<ChessStats> BuildStatsFromDatabase(string username) {
+        private async Task<ChessStats> BuildStatsFromDatabase(string username, IList<Config> configs) {
 
             // TODO: Shouldn't be storing the entire database in memory, 
             // Improve the performance of the database and then change code back to multiple database queries on the DataContext
@@ -97,7 +97,7 @@ namespace API.Services {
             ChessStats stats = new ChessStats();
 
             // TODO: When adding filtering on game configs, replace validGameConfigurations with that list/selection (i.e. user only wants blitz stats, or a subset of each)
-            foreach (Config config in ValidGameConfigurations.Configs()) {
+            foreach (Config config in configs) {
                 string rules = config.Rules;
                 string timeClass = config.TimeClass;
                 string timeControl = config.TimeControl;
@@ -284,15 +284,15 @@ namespace API.Services {
                 string rules = game.Value<string>("rules");
                 string timeControl = game.Value<string>("time_control");
                 string timeClass = game.Value<string>("time_class");
-                Config config = new Config(rules, timeClass, timeControl);
-                // string configuration = $"{rules}:{timeControl}:{timeClass}";
 
-
+                // TODO: Handle any errors (not parsed correctly)
                 // Only check valid game configurations
-                if (!ValidGameConfigurations.Contains(config)) {
-                    continue;
+                if (Config.TryParse(rules, timeClass, timeControl, out Config config)) {
+                    if (!ValidGameConfigurations.Contains(config)) {
+                        continue;
+                    }
                 }
-
+                
                 // Determine outcome
                 JObject white = game.Value<JObject>("white");
                 JObject black = game.Value<JObject>("black");
