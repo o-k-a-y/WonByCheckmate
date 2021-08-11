@@ -50,7 +50,12 @@ export class TablesComponent implements OnInit {
   private constructTables(): {} {
     const tables: {} = {};
 
-    Object.keys(this.data).forEach(timeClass => {
+
+    // The API can return empty objects for time classes where the user did not request data so only display what has data
+    const timeClasses = Object.keys(this.data).filter(key => {
+      return Object.keys(this.data[key]).length !== 0;
+    });
+    for (const timeClass of timeClasses) {
       tables[timeClass] = {};
       tables[timeClass]['won'] = {};
       tables[timeClass]['lost'] = {};
@@ -78,7 +83,7 @@ export class TablesComponent implements OnInit {
           tables[timeClass][outcome][timeControl][result] = resultAmount;
         })
       })
-    });
+    };
 
     return tables;
   }

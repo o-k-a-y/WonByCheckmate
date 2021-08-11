@@ -31,6 +31,7 @@ namespace API.Services {
         }
 
         public async Task<ChessStats> GetStats(string username, IList<Config> configs) {
+        // public async Task<Dictionary<string, Dictionary<string, Dictionary<string, int>>>> GetStats(string username, IList<Config> configs) {
             // username = username.ToLower();
             await UpdateGamesIfNeeded(username);
 
@@ -80,6 +81,7 @@ namespace API.Services {
         // TODO: The LINQ queries used are probably not efficient at all
         // TODO: Some way to specify rules in case in the future different chess rules besides "chess" are allowed (probably not)
         private async Task<ChessStats> BuildStatsFromDatabase(string username, IList<Config> configs) {
+        // private async Task<Dictionary<string, Dictionary<string, Dictionary<string, int>>>> BuildStatsFromDatabase(string username, IList<Config> configs) {
 
             // TODO: Shouldn't be storing the entire database in memory, 
             // Improve the performance of the database and then change code back to multiple database queries on the DataContext
@@ -93,7 +95,31 @@ namespace API.Services {
                 }).ToListAsync();
 
 
-            // TODO: Some way to abstract to separate objects?
+            // // TODO: Some way to abstract to separate objects?
+            // Dictionary<string, Dictionary<string, Dictionary<string, int>>> stats = new Dictionary<string, Dictionary<string, Dictionary<string, int>>>();
+            // foreach (Config config in configs) {
+            //     string rules = config.Rules;
+            //     string timeClass = config.TimeClass;
+            //     string timeControl = config.TimeControl;
+            //     var resultTypes = Enum.GetNames(typeof(GameResultType));
+            //     if (!stats.ContainsKey(timeClass)) {
+            //         stats.Add(timeClass, new Dictionary<string, Dictionary<string, int>>());
+            //         stats[timeClass].Add(timeControl, new Dictionary<string, int>());
+            //     } else {
+            //         if (!stats[timeClass].ContainsKey(timeControl)) {
+            //             stats[timeClass].Add(timeControl, new Dictionary<string, int>());
+            //         }
+            //     }
+
+            //     foreach (var result in resultTypes) {
+            //         if (!stats[timeClass][timeControl].ContainsKey(result)) {
+            //             int count = games.Count(game => game.Username == username && game.Result == result && game.TimeClass == timeClass && game.TimeControl == timeControl && game.Rules == rules);
+            //             stats[timeClass][timeControl].Add(result, count);
+            //         }
+            //     }
+            // }
+            // return stats;
+
             ChessStats stats = new ChessStats();
 
             // TODO: When adding filtering on game configs, replace validGameConfigurations with that list/selection (i.e. user only wants blitz stats, or a subset of each)
@@ -156,24 +182,6 @@ namespace API.Services {
                     }
                 }
             }
-
-            // if (!stats.ContainsKey(timeClass)) {
-            //     stats.Add(timeClass, new Dictionary<string, Dictionary<string, int>>());
-            //     stats[timeClass].Add(timeControl, new Dictionary<string, int>());
-            // } else {
-            //     if (!stats[timeClass].ContainsKey(timeControl)) {
-            //         stats[timeClass].Add(timeControl, new Dictionary<string, int>());
-            //     }
-            // }
-
-            // foreach (var result in resultTypes) {
-            //     if (!stats[timeClass][timeControl].ContainsKey(result)) {
-            //         int count = games.Count(game => game.Username == username && game.Result == result && game.TimeClass == timeClass && game.TimeControl == timeControl && game.Rules == rules);
-            //         stats[timeClass][timeControl].Add(result, count);
-            //     }
-            // }
-            // }
-
             return stats;
         }
 
