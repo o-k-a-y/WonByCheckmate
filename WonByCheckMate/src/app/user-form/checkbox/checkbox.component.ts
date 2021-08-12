@@ -3,6 +3,7 @@ import { ThemePalette } from '@angular/material/core';
 import { BehaviorSubject, Observable, ReplaySubject } from 'rxjs';
 import { map, take, takeUntil } from 'rxjs/operators';
 import { combineLatest } from 'rxjs';
+import { ConfigService } from 'src/app/services/config-service';
 
 export interface Checkbox {
   name: string | undefined, 
@@ -58,7 +59,7 @@ export class CheckboxComponent implements OnInit {
     });
   }
 
-  constructor() {
+  constructor(public configService: ConfigService) {
     this.checkbox$.pipe(
       // automatically unsubscribe when `this.destroyed$` emits a value
       takeUntil(this.destroyed$),

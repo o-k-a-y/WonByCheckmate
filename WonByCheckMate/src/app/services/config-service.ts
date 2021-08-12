@@ -7,7 +7,7 @@ export class ConfigService {
   timeClassEmoji: Record<string, string> = {
     'bullet': '🚀',
     'blitz': '⚡',
-    'rapid': '⏲️',
+    'rapid': '⏱️',
     'daily': '🗓️'
   };
 
@@ -55,6 +55,8 @@ export class ConfigService {
     return `${this.convertTimeClass(timeClass)} ${this.convertTimeControl(timeControl)}`;
   }
 
+  // 1/86400 -> 1 days/move
+  // 30 -> 30 seconds
   convertTimeControl(timeControl: string): string {
     // TODO: Use regex instead to convert
     // Is it a daily game such as 1/86400 (24 hours to make a move)

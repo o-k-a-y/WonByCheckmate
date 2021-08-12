@@ -12,7 +12,6 @@ export class PlayerStatsService {
   constructor(private http: HttpClient) { }
 
   getStats(request: UsernameRequest): Observable<ChessStats> {
-    let obj = request.queryParams;
     return this.http.get<ChessStats>(`${this.baseUrl}${request.username}`, {
       params: request.queryParams
     });

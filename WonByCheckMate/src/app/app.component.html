@@ -1,14 +1,8 @@
-<p>
-  Try not to spam the requests as the server may rate limit you
-</p>
-
-
-
 <p class="httpError" *ngIf="httpError">
-  Some http request failed (probably rate limited)
+  {{httpError}}
 </p>
 
-<app-user-form (onSubmitForm)="fetchPlayerStats($event)"></app-user-form>
+<app-user-form (submitForm)="fetchPlayerStats($event)"></app-user-form>
 
 
 <!-- The #statsGraphs template reference is here so that when the app-stats-graphs component is rendered, the browser will scroll smoothly to here -->

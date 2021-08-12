@@ -1,5 +1,6 @@
 import { HttpParameterCodec, HttpParams } from '@angular/common/http';
 import { AfterViewInit, Component, EventEmitter, OnInit, Output, QueryList, ViewChildren } from '@angular/core';
+import { FormError } from '../models/form-error-enum';
 import { UsernameRequest } from '../models/username-request.model';
 import { ConfigService } from '../services/config-service';
 import { CheckboxComponent } from './checkbox/checkbox.component';
@@ -27,9 +28,12 @@ export class CustomHttpParamEncoder implements HttpParameterCodec {
   styleUrls: ['./user-form.component.scss']
 })
 export class UserFormComponent implements OnInit, AfterViewInit {
+  @Output() submitForm: EventEmitter<UsernameRequest> = new EventEmitter();
+  
   @ViewChildren(CheckboxComponent) checkboxComponents!: QueryList<CheckboxComponent>;
-  @Output() onSubmitForm: EventEmitter<UsernameRequest> = new EventEmitter();
+
   username: string = "";
+  formError: FormError = FormError.None;
 
   
   checkboxNames: Record<string, string[]> = {
@@ -48,13 +52,24 @@ export class UserFormComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
   }
 
-  formSubmitted(username: any) {
+  formSubmitted(username: string) {
+    this.formError = FormError.None;
+    if (username.length < 4) {
+      this.formError = FormError.NoUser;
+      return;
+    }      
+    // if (username.len)
     const checkboxData = this.getCheckboxData();
+
+    if (Object.keys(checkboxData).length === 0) {
+      this.formError = FormError.NoCheckboxSelected;
+      return;
+    }
     const request: UsernameRequest = {
-      username: username.username,
+      username: username,
       queryParams: this.buildQueryParams()
     };
-    this.onSubmitForm.emit(request);
+    this.submitForm.emit(request);
     // this.onSubmitForm.emit(`${username.username}${this.buildQueryString()}`);
   }
 

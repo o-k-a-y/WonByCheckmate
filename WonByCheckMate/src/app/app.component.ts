@@ -1,5 +1,6 @@
 import { Component, ElementRef, SimpleChange, ViewChild } from '@angular/core';
 import { ChessStats } from './models/chess-stats.model';
+import { NetworkError } from './models/network-error-enum';
 import { UsernameRequest } from './models/username-request.model';
 import { PlayerStatsService } from './services/player-stats.service';
 
@@ -12,7 +13,7 @@ export class AppComponent {
   @ViewChild('statsGraphs') statsGraphs: ElementRef;
   title = 'WonByCheckmate';
 
-  httpError: boolean = false;
+  httpError: NetworkError = NetworkError.None;
   doneParsing: boolean = false;
   stats!: ChessStats;
 
@@ -28,7 +29,7 @@ export class AppComponent {
 
 
   fetchPlayerStats(request: UsernameRequest) {
-    this.httpError = false;
+    this.httpError = NetworkError.None;
     this.doneParsing = false;
 
     // console.log(username);
@@ -40,8 +41,9 @@ export class AppComponent {
         this.doneParsing = true;
       },
       (error) => {
+        // TODO: Handles all the types of errors
+        this.httpError = NetworkError.GenericError;
         console.log(error);
-        this.httpError = true;
       },
       () => {
       }

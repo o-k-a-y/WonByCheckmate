@@ -1,4 +1,8 @@
-<form #playerForm="ngForm" class="d-flex" (ngSubmit)="formSubmitted(playerForm.value)" autocomplete="off">
+<p class="formError">
+    {{formError}}
+</p>
+
+<form #playerForm="ngForm"  (ngSubmit)="formSubmitted(playerForm.value.username)" autocomplete="off">
     <!-- mr-2 is right justified -->
     <input
         name="username"
@@ -6,7 +10,11 @@
         class="form-control mr-2"
         type="search" 
         placeholder="Username">
-    <button class="btn btn-success" type="submit">Check</button>
+    <button class="btn btn-success" type="submit">
+        <span>♚</span>
+        Check stats
+        <span>♚</span>
+    </button>
 </form>
 
 <div class="checkboxes">
