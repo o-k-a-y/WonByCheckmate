@@ -10,18 +10,18 @@ export class PieChartComponent implements OnInit, AfterViewInit {
 
   @Input() data: {} = {};
   @Input() labels: string[] = [];
-  @Input() title: string;
+  @Input() title: string = "";
 
-  @ViewChild('myChart') chartRef: ElementRef;
+  @ViewChild('myChart') chartRef: ElementRef | undefined; // TODO: does it need to include undefined?
 
 
-  chart: Chart;
+  chart: Chart | undefined; // TODO: does it need to include undefined?
   ctx: any;
   canvas: any;
 
   // https://coolors.co/ef476f-ffd166-06d6a0-118ab2-073b4c
   // https://coolors.co/ff595e-ffca3a-8ac926-1982c4-6a4c93
-  labelColor: {} = {
+  labelColor: Record<string, string> = {
     "Resignation": "#ef476f",
     "Timeout": "#ffd166",
     "Checkmate": "#06d6a0",
@@ -45,7 +45,7 @@ export class PieChartComponent implements OnInit, AfterViewInit {
 
 
   ngAfterViewInit(): void {
-    this.canvas = this.chartRef.nativeElement;
+    this.canvas = this.chartRef?.nativeElement;
     let ctx = this.canvas.getContext('2d');
 
     // The actual chart
@@ -86,8 +86,8 @@ export class PieChartComponent implements OnInit, AfterViewInit {
   }
 
   // Only works with 6 char hex values
-  private hexToRgba(hex, alpha) {
-    const [r, g, b] = hex.match(/\w\w/g).map(x => parseInt(x, 16));
+  private hexToRgba(hex: string, alpha: number) {
+    const [r, g, b] = hex.match(/\w\w/g)!.map(x => parseInt(x, 16));
     return `rgba(${r},${g},${b},${alpha})`;
   };
 }

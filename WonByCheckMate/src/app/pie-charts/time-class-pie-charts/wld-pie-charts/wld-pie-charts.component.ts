@@ -10,13 +10,13 @@ import { ConfigService } from 'src/app/services/config-service';
 })
 export class WldPieChartsComponent implements OnInit {
   @Input() data!: Record<string, number>;
-  @Input() timeClass!: string;
-  @Input() timeControl: string;
+  @Input() timeClass: string = "";
+  @Input() timeControl: string = "";
   
-  wonData: {} = {};
-  lostData: {} = {};
-  drawData: {} = {};
-  wldData: {} = {};
+  wonData: Record<string, number> = {};
+  lostData: Record<string, number> = {};
+  drawData: Record<string, number> = {};
+  wldData: Record<string, number> = {};
   
   wldLabels: string[] = ['Won', 'Lost', 'Draw'];
   

@@ -1,8 +1,25 @@
+app-checkbox {
+    float: left;
+}
+
 input {
+    float: left;
     width: 40%;
-    // margin: 10px;
+    font-size: x-large;
+    margin-right: 10px;
 }
 
 button {
-    width: 30%;
+    margin-left: 10px;
+    // width: 30%;
+    // display: flex;
+}
+
+span {
+    margin: 5px;
+    font-size: x-large;
+}
+
+.checkboxes {
+    display: inline-block;
 }

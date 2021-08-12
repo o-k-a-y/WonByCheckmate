@@ -20,9 +20,23 @@ namespace API.Controllers {
             // TODO: Some http interceptor to take care of casting username to lower case?
             return Ok(await _chessStatsService.GetGames(username.ToLower()));
         }
+
+        // [FromQuery(Name = "config")] allows passing multiple query parameters with the same key
+        // The parameter is renamed to config so something like ?config=1&config=2&config=3 is possible
         [HttpGet("{username}")]
-        public async Task<ActionResult<ChessStats>> GetStats(string username) {
-            return Ok(await _chessStatsService.GetStats(username.ToLower()));
+        public async Task<ActionResult<ChessStats>> GetStats(string username, [FromQuery(Name = "configs")] string configsStr) {
+            // TODO: fix this awful mess
+            if (configsStr != null) {
+                string[] configArr = configsStr.Split(',');
+
+                ConfigFactory factory = new ConfigFactory();
+                List<Config> configs = (List<Config>) factory.GetConfigs(configArr);
+                
+                return Ok(await _chessStatsService.GetStats(username.ToLower(), configs));
+            }
+
+            // It might be a good idea to do something else if there are no configs passed in as a query parameter
+            return NotFound();
         }
 
     }

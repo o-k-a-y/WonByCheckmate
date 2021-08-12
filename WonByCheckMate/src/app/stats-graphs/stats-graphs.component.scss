@@ -1,0 +1,19 @@
+a:hover {
+    // background-color: yellow;
+}
+
+li a {
+    font-family: 'Courier New', Courier, monospace;
+}
+
+.justify-content-end a:not(.active) {
+    cursor: pointer;
+}
+
+ul.justify-content-end > li a.active {
+    // background-color: ; 
+}
+
+ul.justify-content-end > li a:not(.active) {
+    // background-color: ;
+}

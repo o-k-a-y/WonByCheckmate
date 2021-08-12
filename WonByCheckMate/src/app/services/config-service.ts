@@ -4,12 +4,24 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class ConfigService {
-  timeClass: {} = {
-    "bullet": "🚀",
-    "blitz": "⚡",
-    "rapid": "⏲️",
-    "daily": "🗓️"
-  }
+  timeClassEmoji: Record<string, string> = {
+    'bullet': '🚀',
+    'blitz': '⚡',
+    'rapid': '⏱️',
+    'daily': '🗓️'
+  };
+
+  timeClasses: string[] = [
+    'bullet',
+    'blitz',
+    'rapid',
+    'daily'
+  ];
+
+  // Other rules include chess variants like bughouse that most likely won't be supported, but if are, would be added here
+  rules: Record<string, string> = {
+    chess: 'chess'
+  };
 
   // TODO: Move to some const class/enum/etc
   won = 'won';
@@ -21,14 +33,14 @@ export class ConfigService {
     'wonByCheckmate',
     'wonByResignation',
     'wonByTimeout'
-  ]
+  ];
 
   lostLabels: string[] = [
     'lostByAbandonment',
     'lostByCheckmate',
     'lostByResignation',
     'lostByTimeout'
-  ]
+  ];
 
   drawLabels: string[] = [
     'drawBy50Move',
@@ -37,12 +49,14 @@ export class ConfigService {
     'drawByRepetition',
     'drawByStalemate',
     'drawByTimeoutVsInsufficientMaterial'
-  ]
+  ];
 
   convertTitle(timeClass: string, timeControl: string): string {
     return `${this.convertTimeClass(timeClass)} ${this.convertTimeControl(timeControl)}`;
   }
 
+  // 1/86400 -> 1 days/move
+  // 30 -> 30 seconds
   convertTimeControl(timeControl: string): string {
     // TODO: Use regex instead to convert
     // Is it a daily game such as 1/86400 (24 hours to make a move)
@@ -78,7 +92,7 @@ export class ConfigService {
 
   // Return emoji equivalent of the time class string
   convertTimeClass(timeClass: string): string {
-    return this.timeClass[timeClass];
+    return this.timeClassEmoji[timeClass];
   }
 
   // Turn something like wonByResignation into Resignation for easier user readability
@@ -87,7 +101,7 @@ export class ConfigService {
   }
 
   // Return labels without the wonBy/lostBy/drawBy prefix 
-  getLabels(outcome: string): string[] {
+  getLabels(outcome: string): string[] | null {
     switch (outcome) {
       case this.won:
         return this.wonLabels.map(label => {

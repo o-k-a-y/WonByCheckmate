@@ -1,5 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, SimpleChange, ViewChild } from '@angular/core';
 import { ChessStats } from './models/chess-stats.model';
+import { NetworkError } from './models/network-error-enum';
+import { UsernameRequest } from './models/username-request.model';
 import { PlayerStatsService } from './services/player-stats.service';
 
 @Component({
@@ -8,41 +10,49 @@ import { PlayerStatsService } from './services/player-stats.service';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
+  @ViewChild('statsGraphs') statsGraphs: ElementRef;
   title = 'WonByCheckmate';
 
-  httpError: boolean = false;
+  httpError: NetworkError = NetworkError.None;
   doneParsing: boolean = false;
   stats!: ChessStats;
-
-  displayTables: boolean = true;
 
   constructor(public playerStatsService: PlayerStatsService) {}
 
   ngOnInit() {
   }
 
+  ngOnChanges(changes: SimpleChange) {
+    console.log(changes);
+    console.log('changes');
+  }
 
-  fetchPlayerStats(username: string) {
-    this.httpError = false;
+
+  fetchPlayerStats(request: UsernameRequest) {
+    this.httpError = NetworkError.None;
     this.doneParsing = false;
 
     // console.log(username);
 
-    this.playerStatsService.getStats(username).subscribe(
+    this.playerStatsService.getStats(request).subscribe(
       (stats: ChessStats) => {
         // console.log(stats);
         this.stats = stats;
         this.doneParsing = true;
       },
-      error => {
+      (error) => {
+        // TODO: Handles all the types of errors
+        this.httpError = NetworkError.GenericError;
         console.log(error);
-        this.httpError = true;
+      },
+      () => {
       }
     );
   }
 
-  toggleCharts() {
-    this.displayTables = !this.displayTables;
+  // Smoothly scroll to the graphs built from the stats data
+  scrollToView() {
+    this.statsGraphs.nativeElement.scrollIntoView({behavior: 'smooth'});
   }
 
 }

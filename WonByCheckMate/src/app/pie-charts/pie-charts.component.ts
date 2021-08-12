@@ -17,7 +17,10 @@ export class PieChartsComponent implements OnInit {
   constructor(public configService: ConfigService) { }
 
   ngOnInit(): void {
-    this.timeClasses = Object.keys(this.data);
+    // Filter out time class data where there is no data for that time class
+    this.timeClasses = Object.keys(this.data).filter(timeClass => {
+      return Object.keys(this.data[timeClass]).length !== 0;
+    });
     // console.log(this.data);
   }
 }

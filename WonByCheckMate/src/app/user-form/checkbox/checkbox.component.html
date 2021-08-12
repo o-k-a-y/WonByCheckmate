@@ -1,0 +1,20 @@
+<section class="mainCheckbox">
+    <span class="subCheckbox">
+        <mat-checkbox class="example-margin" [checked]="allComplete" [color]="checkbox?.color"
+            [indeterminate]="someComplete()" (change)="setAll($event.checked)">
+            <!-- {{checkbox?.name}} -->
+            {{checkbox?.name}} {{configService.timeClassEmoji[checkbox?.name]}}
+        </mat-checkbox>
+    </span>
+    <span class="subCheckbox">
+        <ul>
+            <li *ngFor="let subCheckbox of checkbox?.subCheckboxes">
+                <mat-checkbox [(ngModel)]="subCheckbox.completed" [color]="subCheckbox.color"
+                    (ngModelChange)="updateAllComplete()">
+                    <!-- {{subCheckbox.name}} -->
+                    
+                    {{configService.convertTimeControl(subCheckbox.name)}}
+                </mat-checkbox>
+        </ul>
+    </span>
+</section>
