@@ -1,0 +1,50 @@
+.spinner-img {
+    height: 10vh;
+    width: 10vh;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+    animation: loading-spinner-img 0.5s linear infinite;
+}
+
+
+// Spin in a circle clockwise
+@keyframes loading-spinner-img {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(359deg);
+    }
+}
+
+// Spin in a circle counter-clockwise
+@keyframes loading-spinner-img {
+    from {
+        transform: rotate(359deg);
+    }
+    to {
+        transform: rotate(0deg);
+    }
+}
+
+// Rotate around the y axis
+// @keyframes loading-spinner-img {
+//     0%,
+//     100% {
+//         animation-timing-function: cubic-bezier(0.5, 0, 1, 0.5);
+//     }
+//     0% {
+//         transform: rotateY(0deg);
+//     }
+//     50% {
+//         transform: rotateY(1800deg);
+//         animation-timing-function: cubic-bezier(0, 0.5, 0.5, 1);
+//     }
+//     100% {
+//         transform: rotateY(3600deg);
+//     }
+// }

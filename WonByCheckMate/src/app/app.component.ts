@@ -2,6 +2,7 @@ import { Component, ElementRef, SimpleChange, ViewChild } from '@angular/core';
 import { ChessStats } from './models/chess-stats.model';
 import { NetworkError } from './models/network-error-enum';
 import { UsernameRequest } from './models/username-request.model';
+import { LoaderService } from './loader/loader.service';
 import { PlayerStatsService } from './services/player-stats.service';
 
 @Component({
@@ -17,7 +18,8 @@ export class AppComponent {
   doneParsing: boolean = false;
   stats!: ChessStats;
 
-  constructor(public playerStatsService: PlayerStatsService) {}
+  constructor(public playerStatsService: PlayerStatsService,
+              public loaderService: LoaderService) {}
 
   ngOnInit() {
   }
