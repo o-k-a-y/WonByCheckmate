@@ -1,10 +1,12 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { AppComponent } from './app.component';
+import { OpeningsComponent } from './openings/openings.component';
+import { ResultsComponent } from './results/results.component';
 
 const routes: Routes = [
-  { path: 'results', component: AppComponent } // TODO: eventually there will be a home page or there will be a separate component for results that's not app-component
-  // subject to change
+  { path: 'results', component: ResultsComponent },
+  { path: 'openings', component: OpeningsComponent },
+  { path: '**', component: ResultsComponent} // TODO: Add some 404 page
 ];
 
 @NgModule({

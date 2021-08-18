@@ -1,9 +1,12 @@
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatIconModule } from '@angular/material/icon';
 import { MatRadioModule } from '@angular/material/radio';
+import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -27,6 +30,9 @@ import { TimeClassTablesComponent } from './tables/time-class-tables/time-class-
 import { CheckboxComponent } from './user-form/checkbox/checkbox.component';
 import { UserFormComponent } from './user-form/user-form.component';
 import { LoaderComponent } from './loader/loader.component';
+import { NavbarComponent } from './navbar/navbar.component';
+import { OpeningsComponent } from './openings/openings.component';
+import { ResultsComponent } from './results/results.component';
 
 @NgModule({
   declarations: [
@@ -43,7 +49,10 @@ import { LoaderComponent } from './loader/loader.component';
     TimeClassPieChartsComponent,
     CheckboxComponent,
     StatsGraphsComponent,
-    LoaderComponent
+    LoaderComponent,
+    NavbarComponent,
+    OpeningsComponent,
+    ResultsComponent
   ],
   imports: [
     AppRoutingModule,
@@ -52,9 +61,12 @@ import { LoaderComponent } from './loader/loader.component';
     FormsModule,
     ChartsModule,
     BrowserAnimationsModule,
+    MatButtonModule,
     MatCheckboxModule, // TODO: split material modules into a separate module to import here
     MatCardModule,
+    MatIconModule,
     MatRadioModule,
+    MatToolbarModule,
     MatProgressSpinnerModule
   ],
   providers: [
