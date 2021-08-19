@@ -3,7 +3,7 @@ app-checkbox {
 }
 
 input {
-    float: left;
+    // float: left;
     width: 40%;
     font-size: x-large;
     margin-right: 10px;
@@ -11,15 +11,23 @@ input {
 
 button {
     margin-left: 10px;
-    // width: 30%;
-    // display: flex;
+}
+
+form {
+    display: flex;
+    margin-left: 10px;
 }
 
 span {
     margin: 5px;
-    font-size: x-large;
+    font-size: large;
 }
 
 .checkboxes {
     display: inline-block;
+}
+
+.formError {
+    margin-top: 20px;
+    margin-left: 10px;
 }

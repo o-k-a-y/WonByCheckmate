@@ -1,6 +1,6 @@
 <section class="mainCheckbox">
     <span class="subCheckbox">
-        <mat-checkbox class="example-margin" [checked]="allComplete" [color]="checkbox?.color"
+        <mat-checkbox [checked]="allComplete" [color]="checkbox?.color"
             [indeterminate]="someComplete()" (change)="setAll($event.checked)">
             <!-- {{checkbox?.name}} -->
             {{checkbox?.name}} {{configService.timeClassEmoji[checkbox?.name]}}
