@@ -13,11 +13,10 @@ export class NavbarComponent {
   @ViewChild('drawer') drawer!: MatSidenav;
 
   // When the screen hits this size, the breakpoint observer is triggered
-  // width: SimpleChange = new SimpleChange(undefined, undefined, true);
   maxWidth: number = 650;
   maxWidthPx: string = `(max-width: ${this.maxWidth}px)`;
-  minWidthPx: string = `(min-width: ${this.maxWidth}px)`;
 
+  // Observable that returns true if the screen size breaks past a certain point (maxWidth)
   smallScreen$: Observable<boolean> = this.breakpointObserver.observe(this.maxWidthPx)
     .pipe(
       map(result => result.matches),
@@ -31,14 +30,6 @@ export class NavbarComponent {
   // Closing it means to set MatDrawerToggleResult to 'close'
   @HostListener('window:resize', ['$event'])
   closeSideNavbar(event) {
-    // This solution may actually be slower than leaving it alone
-    // this.width.previousValue = this.width.currentValue;
-    // this.width.currentValue = event.target.innerWidth;
-    // if (this.width.currentValue > this.maxWidth && this.width.previousValue !== undefined && this.width.previousValue < this.maxWidth) {
-
-    //   this.drawer.close();
-    // }
-
     if (event.target.innerWidth > this.maxWidth) {
       this.drawer.close();
     }
