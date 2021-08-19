@@ -1,16 +1,45 @@
-<mat-toolbar color="primary" class="mat-elevation-z8">
-    <span>
-        <span class="icon">
-            <mat-icon [inline]="true" svgIcon="checkmate-light"></mat-icon>
-        </span>
-        WonByCheckmate
-    </span>
-
-    <div class="spacer"></div>
-
-    <a mat-button routerLink="results">Results</a>
-    <a mat-button routerLink="openings">Openings</a>
-    <a mat-button>Something</a>
-    <a mat-button>Something</a>
-    <a mat-button>Something</a>
-</mat-toolbar>
+<mat-sidenav-container class="sidenav-container">
+    <mat-sidenav #drawer class="sidenav" fixedInViewport
+      [ngClass]="{hidden: !(smallScreen$ | async)}"
+      [attr.role]="(smallScreen$ | async) ? 'dialog' : 'navigation'"
+      [mode]="'push'"
+      >
+      <mat-toolbar>Menu</mat-toolbar>
+      <mat-nav-list *ngIf="(smallScreen$ | async)">
+        <!-- <div (click)="toggleDrawer($event)"> -->
+          <a (click)="drawer.toggle()" mat-list-item routerLink="results">Results</a>
+          <a (click)="drawer.toggle()" mat-list-item routerLink="openings">Openings</a>
+          <a (click)="drawer.toggle()" mat-list-item>Something</a>
+          <a (click)="drawer.toggle()" mat-list-item>Something</a>
+          <a (click)="drawer.toggle()" mat-list-item>Something</a>
+        <!-- </div> -->
+      </mat-nav-list>
+    </mat-sidenav>
+      <mat-toolbar color="primary" class="mat-elevation-z8">
+        <button
+          type="button"
+          aria-label="Toggle sidenav"
+          mat-icon-button
+          (click)="drawer.toggle(); menuOpened='true'"
+          *ngIf="smallScreen$ | async">
+          <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+        </button>
+      <span>
+          <span class="icon">
+              <mat-icon [inline]="true" svgIcon="checkmate-light"></mat-icon>
+          </span>
+          <span *ngIf="!(smallScreen$ | async)">WonByCheckmate</span>
+      </span>
+  
+        <mat-toolbar *ngIf="!(smallScreen$ | async)" color="primary">
+          <div class="spacer"></div>
+          <a mat-button routerLink="results">Results</a>
+          <a mat-button routerLink="openings">Openings</a>
+          <a mat-button>Something</a>
+          <a mat-button>Something</a>
+          <a mat-button>Something</a>
+        </mat-toolbar>
+      </mat-toolbar>
+      <!-- Add Content Here -->
+      <ng-content></ng-content>
+  </mat-sidenav-container>
