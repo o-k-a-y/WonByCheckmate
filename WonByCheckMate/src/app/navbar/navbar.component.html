@@ -1,40 +1,42 @@
 <mat-sidenav-container class="sidenav-container">
-    <mat-sidenav (click)="drawer.toggle()" #drawer class="sidenav" fixedInViewport
-      [mode]="'over'">
-      <mat-toolbar>Menu</mat-toolbar>
-      <mat-nav-list>
-        <a mat-list-item routerLink="results">Results</a>
-        <a mat-list-item routerLink="openings">Openings</a>
-        <a mat-list-item>Something</a>
-        <a mat-list-item>Something</a>
-        <a mat-list-item>Something</a>
-      </mat-nav-list>
-    </mat-sidenav>
-      <mat-toolbar color="primary" class="mat-elevation-z8">
-        <button
-          type="button"
-          aria-label="Toggle sidenav"
-          mat-icon-button
-          (click)="drawer.toggle(); menuOpened='true'"
-          *ngIf="smallScreen$ | async">
-          <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
-        </button>
-      <span>
-          <span class="icon">
-              <mat-icon [inline]="true" svgIcon="checkmate-light"></mat-icon>
-          </span>
-          <span *ngIf="!(smallScreen$ | async)">WonByCheckmate</span>
+  <mat-sidenav #drawer
+    (click)="drawer.toggle()"
+    fixedInViewport 
+    [mode]="'over'">
+  <mat-toolbar class="sidenav" color="primary" >Menu</mat-toolbar>
+  <mat-nav-list>
+    <a mat-list-item routerLink="results">Results</a>
+    <a mat-list-item routerLink="openings">Openings</a>
+    <a mat-list-item>Something</a>
+    <a mat-list-item>Something</a>
+    <a mat-list-item>Something</a>
+  </mat-nav-list>
+</mat-sidenav>
+  <mat-toolbar color="primary" class="mat-elevation-z8">
+    <button
+      type="button"
+      aria-label="Toggle sidenav"
+      mat-icon-button
+      (click)="drawer.toggle(); menuOpened='true'"
+      *ngIf="smallScreen$ | async">
+      <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+    </button>
+  <span>
+      <span class="icon">
+          <mat-icon [inline]="true" svgIcon="checkmate-light"></mat-icon>
       </span>
-  
-        <mat-toolbar *ngIf="!(smallScreen$ | async)" color="primary">
-          <div class="spacer"></div>
-          <a mat-button routerLink="results">Results</a>
-          <a mat-button routerLink="openings">Openings</a>
-          <a mat-button>Something</a>
-          <a mat-button>Something</a>
-          <a mat-button>Something</a>
-        </mat-toolbar>
-      </mat-toolbar>
-      <!-- Add Content Here -->
-      <ng-content></ng-content>
-  </mat-sidenav-container>
+      <span *ngIf="!(smallScreen$ | async)">WonByCheckmate</span>
+  </span>
+
+    <mat-toolbar *ngIf="!(smallScreen$ | async)" color="primary">
+      <div class="spacer"></div>
+      <a mat-button routerLink="results">Results</a>
+      <a mat-button routerLink="openings">Openings</a>
+      <a mat-button>Something</a>
+      <a mat-button>Something</a>
+      <a mat-button>Something</a>
+    </mat-toolbar>
+  </mat-toolbar>
+  <!-- Add Content Here -->
+  <ng-content></ng-content>
+</mat-sidenav-container>
