@@ -1,5 +1,5 @@
 import { BreakpointObserver } from '@angular/cdk/layout';
-import { Component, HostListener, SimpleChange, SimpleChanges, ViewChild } from '@angular/core';
+import { Component, HostListener, OnInit, SimpleChange, SimpleChanges, ViewChild } from '@angular/core';
 import { MatSidenav } from '@angular/material/sidenav/sidenav';
 import { Observable } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
@@ -9,8 +9,13 @@ import { map, shareReplay } from 'rxjs/operators';
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.scss']
 })
-export class NavbarComponent {
+export class NavbarComponent implements OnInit {
   @ViewChild('drawer') drawer!: MatSidenav;
+
+  isDarkTheme: boolean = false;
+  localStorageTheme: string = 'theme';
+  light: string = 'light';
+  dark: string = 'dark';
 
   // When the screen hits this size, the breakpoint observer is triggered
   maxWidth: number = 650;
@@ -25,6 +30,10 @@ export class NavbarComponent {
 
   constructor(private breakpointObserver: BreakpointObserver) { }
 
+  ngOnInit() {
+    this.isDarkTheme = localStorage.getItem(this.localStorageTheme) === this.dark ? true : false;
+  }
+
   // Close the side navbar if the screen width becomes larger than width
   // A better solution may be possible because this can still attempt to "close" the side navbar even if it's not open
   // Closing it means to set MatDrawerToggleResult to 'close'
@@ -33,5 +42,9 @@ export class NavbarComponent {
     if (event.target.innerWidth > this.maxWidth) {
       this.drawer.close();
     }
+  }
+
+  storeThemeSelection() {
+    localStorage.setItem(this.localStorageTheme, this.isDarkTheme ? this.dark : this.light);
   }
 }

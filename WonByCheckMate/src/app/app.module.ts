@@ -11,6 +11,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle'
 import { MatToolbarModule } from '@angular/material/toolbar';
 
 import { BrowserModule } from '@angular/platform-browser';
@@ -70,6 +71,7 @@ import { UserFormComponent } from './user-form/user-form.component';
     MatCardModule,
     MatIconModule,
     MatRadioModule,
+    MatSlideToggleModule,
     MatToolbarModule,
     MatProgressSpinnerModule,
     LayoutModule,

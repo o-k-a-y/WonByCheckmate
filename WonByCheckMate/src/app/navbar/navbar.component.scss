@@ -28,3 +28,12 @@
 .hidden {
     display: none;
 }
+
+a.mat-button:hover {
+    background-color: white;
+}
+
+// Right justify the toggle in the hamburger menu
+.mobileThemeToggle {
+    margin: 0 0 0 auto;
+}
