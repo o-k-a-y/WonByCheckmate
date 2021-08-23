@@ -50,8 +50,11 @@ $WonByCheckMate-theme-dark: mat-dark-theme((
 // that you are using.
 @include angular-material-theme($WonByCheckMate-theme-light);
 
+
+// Avoid the same density styles being generated multiple times by only including the colors for one theme
+// https://github.com/angular/components/blob/master/guides/duplicate-theming-styles.md
 .dark-theme-mode {
-  @include angular-material-theme($WonByCheckMate-theme-dark);
+  @include angular-material-color($WonByCheckMate-theme-dark);
 }
 
 /* You can add global styles to this file, and also import other style files */
