@@ -1,19 +1,23 @@
-<p class="formError">
-    {{formError}}
-</p>
-
-<form #playerForm="ngForm"  (ngSubmit)="formSubmitted(playerForm.value.username)" autocomplete="off">
-    <!-- mr-2 is right justified -->
-    <input
-        name="username"
-        [(ngModel)]="username" 
-        class="form-control mr-2"
-        type="search" 
-        placeholder="Username">
-    <button class="btn btn-success" type="submit">
+<form (ngSubmit)="formSubmitted()" autocomplete="off">
+    <mat-form-field class="example-full-width" appearance="outline">
+        <mat-label>Username</mat-label>
+        <input
+            matInput
+            [formControl]="form"
+            placeholder="Ex. hikaru">
+        <mat-hint>Enter a chess.com user</mat-hint>
+        <mat-error *ngIf="form.hasError('maxlength') || form.hasError('minlength')">
+            Username must be between 3-25 characters
+        </mat-error>
+        <mat-error *ngIf="form.hasError('required')">
+            Username is <strong>required</strong>
+        </mat-error>
+    </mat-form-field>
+    <button mat-raised-button color="accent" type="submit">
         <span>Check Stats</span>
     </button>
 </form>
+  
 
 <div class="checkboxes">
     <app-checkbox [checkboxName]="'bullet'" [subCheckboxNames]="checkboxNames['bullet']"></app-checkbox>

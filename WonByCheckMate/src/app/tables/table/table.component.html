@@ -1,19 +1,19 @@
-<table class="table table-striped table-bordered table-hover">
+<table mat-table>
     <thead>
-        <tr>
+        <tr mat-header-row>
             <!-- Empty cell -->
-            <th class="table-light col-sm-1" scope="col">
+            <th mat-header-cell scope="col">
                 {{title}}
             </th>
-            <th class="table-primary" scope="col" *ngFor="let col of cols">
+            <th mat-header-cell scope="col" *ngFor="let col of cols">
                 {{col}}
             </th>
         </tr>
     </thead>
     <tbody>
-        <tr *ngFor="let row of rows">
-            <th class="table-warning" scope="row" >{{configService.convertTimeControl(row)}}</th>
-            <td *ngFor="let col of cols">
+        <tr mat-row *ngFor="let row of rows">
+            <th mat-header-cell scope="row" >{{configService.convertTimeControl(row)}}</th>
+            <td mat-cell *ngFor="let col of cols">
                 {{data[row][col]}}
             </td>
         </tr>    

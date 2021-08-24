@@ -2,19 +2,29 @@ app-checkbox {
     float: left;
 }
 
-input {
-    // float: left;
+mat-form-field {
     width: 40%;
+}
+
+input {
     font-size: large;
-    margin-right: 10px;
 }
 
 button {
     margin-left: 10px;
+    
+    // Make same height as input field https://stackoverflow.com/questions/65416690/angular-material-how-to-make-button-same-height-as-input
+    margin-top: 0.3em;
+    padding: 1.4em 0;
+    padding-left: 20px;
+    padding-right: 20px;
+    line-height: 1.125;
 }
 
 form {
+    margin-top: 20px;
     display: flex;
+    align-items: flex-start;
     margin-left: 10px;
 }
 
@@ -28,6 +38,7 @@ span {
 }
 
 .formError {
+    color: red;
     margin-top: 20px;
     margin-left: 10px;
 }

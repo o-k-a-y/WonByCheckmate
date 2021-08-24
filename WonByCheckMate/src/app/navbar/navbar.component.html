@@ -7,9 +7,11 @@
     [mode]="'over'">
 
     <mat-toolbar class="sidenav" color="primary">Menu
-      <mat-slide-toggle class="mobileThemeToggle" [ngSwitch]="isDarkTheme" [(ngModel)]="isDarkTheme" labelPosition="before" (change)="storeThemeSelection()">
-        <mat-icon *ngSwitchCase="true">bedtime</mat-icon>
-        <mat-icon *ngSwitchDefault="true">light_mode</mat-icon>
+      <mat-slide-toggle class="mobileThemeToggle" [(ngModel)]="isDarkTheme" labelPosition="before" (change)="storeThemeSelection()">
+        <!-- <mat-icon *ngSwitchCase="true">bedtime</mat-icon>
+        <mat-icon *ngSwitchDefault="false">light_mode</mat-icon> -->
+        <mat-icon *ngIf="isDarkTheme">bedtime</mat-icon>
+        <mat-icon *ngIf="!isDarkTheme">light_mode</mat-icon>
       </mat-slide-toggle>
     </mat-toolbar>
     
@@ -51,9 +53,9 @@
 
     <span class="material-icons-round">
       <!-- Clicking the toggle will bind the isDarkTheme value to true or false if it's toggled or not thanks to ngModel -->
-      <mat-slide-toggle *ngIf="!(smallScreen$ | async)" [ngSwitch]="isDarkTheme" [(ngModel)]="isDarkTheme" labelPosition="before" (change)="storeThemeSelection()">
-        <mat-icon *ngSwitchCase="true">bedtime</mat-icon>
-        <mat-icon *ngSwitchDefault="true">light_mode</mat-icon>
+      <mat-slide-toggle *ngIf="!(smallScreen$ | async)" [(ngModel)]="isDarkTheme" labelPosition="before" (change)="storeThemeSelection()">
+        <mat-icon *ngIf="isDarkTheme">bedtime</mat-icon>
+        <mat-icon *ngIf="!isDarkTheme">light_mode</mat-icon>
       </mat-slide-toggle>
     </span>
   </mat-toolbar>

@@ -1,6 +1,7 @@
 import { HttpParameterCodec, HttpParams } from '@angular/common/http';
 import { AfterViewInit, Component, EventEmitter, OnInit, Output, QueryList, ViewChildren } from '@angular/core';
-import { FormError } from '../models/form-error-enum';
+import { FormControl, FormGroupDirective, NgForm, Validators } from '@angular/forms';
+import { ErrorStateMatcher } from '@angular/material/core';
 import { UsernameRequest } from '../models/username-request.model';
 import { ConfigService } from '../services/config-service';
 import { CheckboxComponent } from './checkbox/checkbox.component';
@@ -29,13 +30,15 @@ export class CustomHttpParamEncoder implements HttpParameterCodec {
 })
 export class UserFormComponent implements OnInit, AfterViewInit {
   @Output() submitForm: EventEmitter<UsernameRequest> = new EventEmitter();
-  
   @ViewChildren(CheckboxComponent) checkboxComponents!: QueryList<CheckboxComponent>;
-
-  username: string = "";
-  formError: FormError = FormError.None;
-
   
+  // Applies validators to the form in the template
+  form = new FormControl('', [
+    Validators.required,
+    Validators.minLength(3),
+    Validators.maxLength(25)
+  ]);
+
   checkboxNames: Record<string, string[]> = {
     'bullet': ['30', '60', '60+1', '120+1'],
     'blitz': ['180', '300', '480', '600'],
@@ -52,25 +55,31 @@ export class UserFormComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
   }
 
-  formSubmitted(username: string) {
-    this.formError = FormError.None;
-    if (username.length < 4) {
-      this.formError = FormError.NoUser;
-      return;
-    }      
-    // if (username.len)
-    const checkboxData = this.getCheckboxData();
-
-    if (Object.keys(checkboxData).length === 0) {
-      this.formError = FormError.NoCheckboxSelected;
+  formSubmitted() {
+    if (this.form.errors) {
       return;
     }
+
+    // console.log(this.form);
+    // this.formError = FormError.None;
+    // if (this.form.value.length < 4) {
+    //   this.formError = FormError.NoUser;
+    //   return;
+    // }
+
+    const checkboxData = this.getCheckboxData();
+
+    // TODO: Custom validator to check this
+    if (Object.keys(checkboxData).length === 0) {
+      // this.formError = FormError.NoCheckboxSelected;
+      return;
+    }
+
     const request: UsernameRequest = {
-      username: username,
+      username: this.form.value,
       queryParams: this.buildQueryParams()
     };
     this.submitForm.emit(request);
-    // this.onSubmitForm.emit(`${username.username}${this.buildQueryString()}`);
   }
 
 
