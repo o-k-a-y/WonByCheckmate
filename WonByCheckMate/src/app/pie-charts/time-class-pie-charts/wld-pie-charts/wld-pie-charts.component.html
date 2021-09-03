@@ -1,4 +1,4 @@
-<div>
+<div class="pie-charts">
     <app-wld-pie-chart (clickedSection)="toggleShowDetailedCharts()" [data]="wldData" [labels]="wldLabels" [title]="title"></app-wld-pie-chart>
     <ng-container *ngIf="shouldShowDetailedCharts">
         <app-pie-chart [data]="wonData" [labels]="configService.getLabels(configService.won)" [title]="'Won'"></app-pie-chart>

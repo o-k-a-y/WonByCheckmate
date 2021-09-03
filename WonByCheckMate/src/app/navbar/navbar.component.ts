@@ -38,7 +38,7 @@ export class NavbarComponent implements OnInit {
   // A better solution may be possible because this can still attempt to "close" the side navbar even if it's not open
   // Closing it means to set MatDrawerToggleResult to 'close'
   @HostListener('window:resize', ['$event'])
-  closeSideNavbar(event) {
+  closeSideNavbar(event: any) {
     if (event.target.innerWidth > this.maxWidth) {
       this.drawer.close();
     }

@@ -7,22 +7,15 @@ import { ConfigService } from 'src/app/services/config-service';
   styleUrls: ['./table.component.scss']
 })
 export class TableComponent implements OnInit {
-  @Input() data: any = {};
-  @Input() timeClass: string = "";
-  @Input() outcome: string = "";
+  @Input() data!: any[];
 
-  rows: string[] = []; // time controls
   cols: string[] = []; // results
-  title: string = "";
 
   constructor(public configService: ConfigService) { }
 
   ngOnInit(): void {
-    this.title = `${this.configService.convertTimeClass(this.timeClass)} ${this.outcome}`;
-    this.rows = Object.keys(this.data);
-
     // Get the columns from just the first time control object (probably should be refactored)
-    for (const row of this.rows) {
+      for (const row in this.data) {
       this.cols = Object.keys(this.data[row]);
       break;
     }
