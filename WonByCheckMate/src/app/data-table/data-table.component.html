@@ -1,10 +1,7 @@
 <!-- https://material.angular.io/components/table/examples -->
 <div class="mat-elevation-z8 data-table">
   <table mat-table [dataSource]="tableData" class="mat-elevation-z8 full-width-table">
-
-    
     <ng-container [matColumnDef]="column" *ngFor="let column of displayedColumns">
-      <!-- TODO: use config service to change columns -->
       <th mat-header-cell *matHeaderCellDef> {{column}} </th>
       <td mat-cell *matCellDef="let element"> {{element[column]}} </td>
     </ng-container>
@@ -12,11 +9,4 @@
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
   </table>
-
-  <!-- <mat-paginator #paginator
-      [length]="dataSource?.data?.length"
-      [pageIndex]="0"
-      [pageSize]="10"
-      [pageSizeOptions]="[5, 10, 20]">
-  </mat-paginator> -->
 </div>

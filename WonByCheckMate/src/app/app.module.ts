@@ -33,7 +33,6 @@ import { WldPieChartsComponent } from './pie-charts/time-class-pie-charts/wld-pi
 import { KeysPipe } from './pipes/keys.pipe';
 import { ResultsComponent } from './results/results.component';
 import { StatsGraphsComponent } from './stats-graphs/stats-graphs.component';
-import { TableComponent } from './tables/table/table.component';
 import { TablesComponent } from './tables/tables.component';
 import { TimeClassTablesComponent } from './tables/time-class-tables/time-class-tables.component';
 import { CheckboxComponent } from './user-form/checkbox/checkbox.component';
@@ -50,7 +49,6 @@ import { MatSortModule } from '@angular/material/sort';
     AppComponent,
     KeysPipe,
     UserFormComponent,
-    TableComponent,
     TablesComponent,
     PieChartsComponent,
     PieChartComponent,
