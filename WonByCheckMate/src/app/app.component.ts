@@ -32,5 +32,13 @@ export class AppComponent {
       "knight-dark",
       this.domSanitizer.bypassSecurityTrustResourceUrl("../assets/icons/knight-dark.svg")
     );
+    this.matIconRegistry.addSvgIcon(
+      "loading-dark",
+      this.domSanitizer.bypassSecurityTrustResourceUrl("../assets/icons/loading-dark.svg")
+    );
+    this.matIconRegistry.addSvgIcon(
+      "loading-light",
+      this.domSanitizer.bypassSecurityTrustResourceUrl("../assets/icons/loading-light.svg")
+    );
   }
 }
