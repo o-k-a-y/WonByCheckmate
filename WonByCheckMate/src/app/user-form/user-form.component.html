@@ -1,25 +1,27 @@
 <form [formGroup]="form" (ngSubmit)="formSubmitted()" autocomplete="off">
-    <mat-form-field class="example-full-width" appearance="outline">
-        <mat-label>Username</mat-label>
-        <input
-            matInput
-            formControlName="username"
-            placeholder="Ex. hikaru">
-        <mat-hint>Enter a chess.com user</mat-hint>
-        <mat-error *ngIf="form.get('username').hasError('maxlength') || form.get('username').hasError('minlength')">
-            Username must be between 3-25 characters
-        </mat-error>
-        <mat-error *ngIf="form.get('username').hasError('required')">
-            Username is <strong>required</strong>
-        </mat-error>
-    </mat-form-field>
-    <button mat-raised-button color="accent" type="submit">
-        <span>Check Stats</span>
-    </button>
+    <div class="form-item">
+        <mat-form-field appearance="outline">
+            <mat-label>Username</mat-label>
+            <input
+                matInput
+                formControlName="username"
+                placeholder="Ex. hikaru">
+            <mat-hint>Enter a chess.com user</mat-hint>
+            <mat-error *ngIf="form.get('username').hasError('maxlength') || form.get('username').hasError('minlength')">
+                Username must be between 3-25 characters
+            </mat-error>
+            <mat-error *ngIf="form.get('username').hasError('required')">
+                Username is <strong>required</strong>
+            </mat-error>
+        </mat-form-field>
+        <button mat-raised-button color="accent" type="submit">
+            <span>Check Stats</span>
+        </button>
+    </div>
 
     <mat-error class="formError" *ngIf="(form.get('checkboxes').dirty || form.get('username').dirty) && form.get('checkboxes').errors">
         Please select <strong>at least</strong> 1 checkbox
     </mat-error>
-    <app-checkboxes formControlName="checkboxes" class="checkboxes"></app-checkboxes>
+    <app-checkboxes class="checkboxes" formControlName="checkboxes"></app-checkboxes>
 </form>
 
