@@ -41,6 +41,7 @@ import { DataTableComponent } from './data-table/data-table.component';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
+import { CheckboxesComponent } from './user-form/checkboxes/checkboxes.component';
 
 
 
@@ -62,7 +63,8 @@ import { MatSortModule } from '@angular/material/sort';
     NavbarComponent,
     OpeningsComponent,
     ResultsComponent,
-    DataTableComponent
+    DataTableComponent,
+    CheckboxesComponent
   ],
   imports: [
     AppRoutingModule,

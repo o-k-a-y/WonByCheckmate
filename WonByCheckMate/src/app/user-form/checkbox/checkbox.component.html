@@ -10,7 +10,7 @@
         <ul>
             <li *ngFor="let subCheckbox of checkbox?.subCheckboxes">
                 <mat-checkbox [(ngModel)]="subCheckbox.completed" [color]="subCheckbox.color"
-                    (ngModelChange)="updateAllComplete()">
+                    (ngModelChange)="updateAllComplete()" (change)="emitSelected()">
                     <!-- {{subCheckbox.name}} -->
                     
                     {{configService.convertTimeControl(subCheckbox.name)}}
