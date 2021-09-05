@@ -1,4 +1,4 @@
 <div *ngIf="loaderService.isLoading | async">
-  <img *ngIf="isDarkTheme" class="spinner-img" src="../../assets/icons/loading-light.svg">
-  <img *ngIf="!isDarkTheme" class="spinner-img" src="../../assets/icons/loading-dark.svg">
+  <img *ngIf="isDarkTheme()" class="spinner-img" src="../../assets/icons/loading-light.svg">
+  <img *ngIf="!isDarkTheme()" class="spinner-img" src="../../assets/icons/loading-dark.svg">
 </div>

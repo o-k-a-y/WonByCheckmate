@@ -7,8 +7,6 @@ import { LoaderService } from './loader.service';
   styleUrls: ['./loader.component.scss']
 })
 export class LoaderComponent implements OnInit {
-  isDarkTheme: boolean = false;
-
   dark: string = 'dark';
   light: string = 'light';
   localStorageTheme: string = 'theme';
@@ -16,7 +14,11 @@ export class LoaderComponent implements OnInit {
   constructor(public loaderService: LoaderService) { }
 
   ngOnInit(): void {
-    this.isDarkTheme = localStorage.getItem(this.localStorageTheme) === this.dark ? true : false;
+  }
+
+
+  isDarkTheme(): boolean {
+    return localStorage.getItem(this.localStorageTheme) === this.dark ? true : false;
   }
 
 }
