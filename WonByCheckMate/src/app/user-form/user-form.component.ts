@@ -1,5 +1,5 @@
 import { HttpParameterCodec, HttpParams } from '@angular/common/http';
-import { Component, EventEmitter, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { UsernameRequest } from '../models/username-request.model';
 import { ConfigService } from '../services/config-service';
@@ -28,14 +28,16 @@ export class CustomHttpParamEncoder implements HttpParameterCodec {
   templateUrl: './user-form.component.html',
   styleUrls: ['./user-form.component.scss']
 })
-export class UserFormComponent {
+export class UserFormComponent implements OnInit {
   @Output() submitForm: EventEmitter<UsernameRequest> = new EventEmitter();
 
   @ViewChild(CheckboxesComponent) checkboxesComponent!: CheckboxesComponent;
   
   form: FormGroup;
   
-  constructor(public configService: ConfigService, private fb: FormBuilder) {
+  constructor(public configService: ConfigService, private fb: FormBuilder) {}
+
+  ngOnInit(): void {
     this.applyValidators();
   }
 
@@ -47,11 +49,14 @@ export class UserFormComponent {
         Validators.minLength(3),
         Validators.maxLength(25)
       ]],
-      checkboxes: ['', [
-        Validators.required,
-        Validators.min(1) // at least 1 checkbox must be selected
-      ]]
+      checkboxes: [0, {validators: [Validators.required, Validators.min(1)]}]
     });
+  }
+
+  onSubmit() {
+    console.log('onSubmit')
+    console.log(this.form.value)
+    console.log(this.form.valid)
   }
 
   formSubmitted() {

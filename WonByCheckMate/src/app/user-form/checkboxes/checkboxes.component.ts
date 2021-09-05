@@ -1,4 +1,4 @@
-import { Component, forwardRef, QueryList, ViewChildren } from '@angular/core';
+import { Component, QueryList, ViewChildren } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { ConfigService } from 'src/app/services/config-service';
 import { Checkbox, CheckboxComponent } from '../checkbox/checkbox.component';
@@ -10,9 +10,7 @@ import { Checkbox, CheckboxComponent } from '../checkbox/checkbox.component';
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(
-        () => CheckboxesComponent
-      ),
+      useExisting: CheckboxesComponent,
       multi: true
     }
   ]

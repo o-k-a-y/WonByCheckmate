@@ -17,7 +17,7 @@
         <span>Check Stats</span>
     </button>
 
-    <mat-error class="formError" *ngIf="form.get('checkboxes').errors">
+    <mat-error class="formError" *ngIf="(form.get('checkboxes').dirty || form.get('username').dirty) && form.get('checkboxes').errors">
         Please select <strong>at least</strong> 1 checkbox
     </mat-error>
     <app-checkboxes formControlName="checkboxes" class="checkboxes"></app-checkboxes>
