@@ -1,6 +1,1 @@
-<!-- <app-table [data]="data" [tableRows]="tableRows" [tableCols]="wonCols"></app-table>
-<app-table [data]="data" [tableRows]="tableRows" [tableCols]="lostCols"></app-table>
-<app-table [data]="data" [tableRows]="tableRows" [tableCols]="drawCols"></app-table>
- -->
-
 <app-time-class-tables *ngFor="let timeClass of tables | keys" [timeClassTables]="tables[timeClass]" [timeClass]="timeClass"></app-time-class-tables>

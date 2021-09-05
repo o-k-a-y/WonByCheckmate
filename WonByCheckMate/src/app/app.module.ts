@@ -33,11 +33,15 @@ import { WldPieChartsComponent } from './pie-charts/time-class-pie-charts/wld-pi
 import { KeysPipe } from './pipes/keys.pipe';
 import { ResultsComponent } from './results/results.component';
 import { StatsGraphsComponent } from './stats-graphs/stats-graphs.component';
-import { TableComponent } from './tables/table/table.component';
 import { TablesComponent } from './tables/tables.component';
 import { TimeClassTablesComponent } from './tables/time-class-tables/time-class-tables.component';
 import { CheckboxComponent } from './user-form/checkbox/checkbox.component';
 import { UserFormComponent } from './user-form/user-form.component';
+import { DataTableComponent } from './data-table/data-table.component';
+import { MatTableModule } from '@angular/material/table';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatSortModule } from '@angular/material/sort';
+import { CheckboxesComponent } from './user-form/checkboxes/checkboxes.component';
 
 
 
@@ -46,7 +50,6 @@ import { UserFormComponent } from './user-form/user-form.component';
     AppComponent,
     KeysPipe,
     UserFormComponent,
-    TableComponent,
     TablesComponent,
     PieChartsComponent,
     PieChartComponent,
@@ -59,7 +62,9 @@ import { UserFormComponent } from './user-form/user-form.component';
     LoaderComponent,
     NavbarComponent,
     OpeningsComponent,
-    ResultsComponent
+    ResultsComponent,
+    DataTableComponent,
+    CheckboxesComponent
   ],
   imports: [
     AppRoutingModule,
@@ -81,7 +86,10 @@ import { UserFormComponent } from './user-form/user-form.component';
     LayoutModule,
     MatSidenavModule,
     MatListModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    MatTableModule,
+    MatPaginatorModule,
+    MatSortModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: LoadingInterceptorService, multi: true }

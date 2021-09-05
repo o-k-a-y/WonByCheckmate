@@ -1,0 +1,14 @@
+.full-width-table {
+  width: 100%;
+  overflow: auto;
+}
+
+.data-table {
+  width: 90%;
+  margin: 20px auto;
+  overflow: auto;
+}
+
+mat-header-cell, mat-cell {
+  justify-content: center;
+}

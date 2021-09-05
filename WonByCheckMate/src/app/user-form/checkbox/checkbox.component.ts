@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ThemePalette } from '@angular/material/core';
 import { BehaviorSubject, Observable, ReplaySubject } from 'rxjs';
 import { map, take, takeUntil } from 'rxjs/operators';
@@ -25,6 +25,8 @@ export class CheckboxComponent implements OnInit {
   @Input() set subCheckboxNames(names: string[] | undefined) {
     this.subCheckboxNames$.next(names);
   }
+
+  @Output() checkboxesSelected: EventEmitter<Checkbox> = new EventEmitter();
 
   private readonly checkboxName$ = new BehaviorSubject<string | undefined>(undefined);
   private readonly subCheckboxNames$ = new BehaviorSubject<string[] | undefined>(undefined);
@@ -81,6 +83,10 @@ export class CheckboxComponent implements OnInit {
     this.allComplete = this.checkbox?.subCheckboxes != null && this.checkbox.subCheckboxes.every(t => t.completed);
   }
 
+  emitSelected() {
+    this.checkboxesSelected.emit(this.checkbox);
+  }
+
   someComplete(): boolean {
     if (this.checkbox?.subCheckboxes == null) {
       return false;
@@ -94,6 +100,8 @@ export class CheckboxComponent implements OnInit {
       return;
     }
     this.checkbox.subCheckboxes.forEach(t => t.completed = completed);
+
+    this.emitSelected();
   }
 
 }
