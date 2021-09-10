@@ -47,6 +47,8 @@ export class ResultsComponent implements OnInit {
 
   // Smoothly scroll to the graphs built from the stats data
   scrollToView() {
+    // TODO: Subtract the height of the navbar so the view is just before the element we're scrolling to
+    // The navbar covers the element enough to be an inconvenience if the page is long enough
     this.statsGraphs.nativeElement.scrollIntoView({behavior: 'smooth'});
   }
 

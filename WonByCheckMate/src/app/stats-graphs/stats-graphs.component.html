@@ -1,19 +1,18 @@
-<ul class="nav nav-tabs justify-content-end">
-    <li class="nav-item">
-        <a class="nav-link active"
-        [class.disabled]="displayTables"
-        [class.active]="displayTables"
-        (click)="toggleCharts()"
-        >Tables</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link"
-        [class.disabled]="!displayTables"
-        [class.active]="!displayTables"
-        (click)="toggleCharts()"
-        >Graphs</a>
-    </li>
-</ul>
+<mat-tab-group (selectedTabChange)="toggleCharts()" mat-align-tabs="end" animationDuration="0ms">
+    <mat-tab>
+        <ng-template mat-tab-label>
+            <mat-icon class="tab-icon">table_chart</mat-icon>
+            Tables
+        </ng-template>
+    </mat-tab>
+    <mat-tab>
+        <ng-template mat-tab-label>
+            <mat-icon class="tab-icon">pie_chart</mat-icon>
+            Graphs
+        </ng-template>
+    </mat-tab>
+</mat-tab-group>
+  
 
 <app-tables *ngIf="displayTables" [data]="stats"></app-tables>
 <app-pie-charts *ngIf="!displayTables" [data]="stats"></app-pie-charts>
