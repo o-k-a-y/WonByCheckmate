@@ -5,7 +5,7 @@
 <app-user-form (submitForm)="fetchPlayerStats($event)"></app-user-form>
 
 <!-- The #statsGraphs template reference is here so that when the app-stats-graphs component is rendered, the browser will scroll smoothly to here -->
-<section #statsGraphs>
+<section id="pls" class="section" #statsGraphs>
     <app-loader></app-loader>
     <!-- Probably doesn't make sense to have both isLoading and doneParsing unless the interceptor can handle whether or not parsing is complete -->
     <ng-container *ngIf="doneParsing && stats!=null">

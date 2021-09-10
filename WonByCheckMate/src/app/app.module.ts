@@ -10,10 +10,14 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
+import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSidenavModule } from '@angular/material/sidenav';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle'
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatSortModule } from '@angular/material/sort';
+import { MatTableModule } from '@angular/material/table';
+import { MatTabsModule } from '@angular/material/tabs';
 import { MatToolbarModule } from '@angular/material/toolbar';
 
 import { BrowserModule } from '@angular/platform-browser';
@@ -21,6 +25,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ChartsModule } from 'ng2-charts';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { DataTableComponent } from './data-table/data-table.component';
 import { LoadingInterceptorService } from './loader/loader-interceptor.service';
 import { LoaderComponent } from './loader/loader.component';
 import { NavbarComponent } from './navbar/navbar.component';
@@ -36,12 +41,10 @@ import { StatsGraphsComponent } from './stats-graphs/stats-graphs.component';
 import { TablesComponent } from './tables/tables.component';
 import { TimeClassTablesComponent } from './tables/time-class-tables/time-class-tables.component';
 import { CheckboxComponent } from './user-form/checkbox/checkbox.component';
-import { UserFormComponent } from './user-form/user-form.component';
-import { DataTableComponent } from './data-table/data-table.component';
-import { MatTableModule } from '@angular/material/table';
-import { MatPaginatorModule } from '@angular/material/paginator';
-import { MatSortModule } from '@angular/material/sort';
 import { CheckboxesComponent } from './user-form/checkboxes/checkboxes.component';
+import { UserFormComponent } from './user-form/user-form.component';
+
+
 
 
 
@@ -88,6 +91,7 @@ import { CheckboxesComponent } from './user-form/checkboxes/checkboxes.component
     MatListModule,
     ReactiveFormsModule,
     MatTableModule,
+    MatTabsModule,
     MatPaginatorModule,
     MatSortModule
   ],
