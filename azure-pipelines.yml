@@ -12,6 +12,8 @@ pool:
 variables:
 - name: ProjectName
   value: 'WonByCheckmate'
+- name: BuildDirectory
+  value: $(System.DefaultWorkingDirectory)/$(ProjectName)/dist/$(ProjectName)
 - name: AngularVersion
   value: 12
 - name: NodeVersion
