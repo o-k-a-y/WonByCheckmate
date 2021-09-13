@@ -1,0 +1,64 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- main
+
+pool:
+  vmImage: ubuntu-20.04
+
+variables:
+- name: ProjectName
+  value: 'WonByCheckmate'
+- name: BuildDirectory
+  value: $(System.DefaultWorkingDirectory)/$(ProjectName)/dist/$(ProjectName)
+- name: AngularVersion
+  value: 12
+- name: NodeVersion
+  value: 14
+  
+steps:
+- task: NodeTool@0
+  displayName: 'node install nodejs v$(NodeVersion)'
+  inputs:
+    versionSpec: '$(NodeVersion).x'
+- task: Bash@3
+  displayName: install angular, build for prod
+  inputs:
+    targetType: 'inline'
+    script: 'cd $(System.DefaultWorkingDirectory)/$(ProjectName) && npm install -g @angular/cli@$(AngularVersion) && npm install && ng build --prod'
+- task: ArchiveFiles@2
+  displayName: zip build
+  inputs:
+    rootFolderOrFile: '$(buildDirectory)'
+    includeRootFolder: false
+    archiveType: 'zip'
+    archiveFile: '$(Build.ArtifactStagingDirectory)/$(ProjectName).zip'
+    replaceExistingArchive: true
+- task: PublishPipelineArtifact@1
+  displayName: publish artifacts
+  inputs:
+    targetPath: '$(Build.ArtifactStagingDirectory)/$(ProjectName).zip'
+    artifactName: 'drop'
+    artifactType: 'pipeline'
+
+# Alternative cross platform way to build Angular project
+# - script: |
+#     cd '$(System.DefaultWorkingDirectory)/$(ProjectName)'
+#     npm install -g @angular/cli
+#     npm install
+#     ng build --prod
+# - task: Npm@1
+#   displayName: npm install angular latest
+#   inputs:
+#     command: 'custom'
+#     workingDir: $(ProjectName)
+#     customCommand: 'install -g @angular/cli@$(AngularVersion)'
+# - task: Npm@1
+#   displayName: build angular dist
+#   inputs:
+#     command: 'custom'
+#     workingDir: $(ProjectName)
+#     customCommand: 'run build'
