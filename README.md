@@ -1,6 +1,17 @@
 # WonByCheckmate
 Chess.com API for statistical information on players.
 
+# Azure DevOps
+## Release
+Runtime Stack: NODE 14
+
+Startup command: `npx serve -s` is required`
+
+# Icons
+Icons in this app are from here:
+- https://thenounproject.com/search/?q=chess+promotion&i=839141
+- https://thenounproject.com/smalllike/collection/chess/?i=4042018
+
 # CORS issues
 - For some reason running Angular on localhost resulted in seemingly unavoidable CORS issues when calling the chess API causing requests to fail
 - This could have been due to forgetting some request header or using the wrong request object
