@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { environment } from 'src/environments/environment';
 import { ChessStats } from '../models/chess-stats.model';
 import { UsernameRequest } from '../models/username-request.model';
 
@@ -8,11 +9,11 @@ import { UsernameRequest } from '../models/username-request.model';
   providedIn: 'root'
 })
 export class PlayerStatsService {
-  baseUrl: string = "https://localhost:5001/api/chessstats/";
+  baseUrl: string = environment.baseUrl;
   constructor(private http: HttpClient) { }
 
   getStats(request: UsernameRequest): Observable<ChessStats> {
-    return this.http.get<ChessStats>(`${this.baseUrl}${request.username}`, {
+    return this.http.get<ChessStats>(`${this.baseUrl}/chessstats/${request.username}`, {
       params: request.queryParams
     });
   }
