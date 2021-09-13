@@ -13,47 +13,47 @@
 // Define the palettes for your theme using the Material Design palettes available in palette.scss
 // (imported above). For each palette, you can optionally specify a default, lighter, and darker
 // hue. Available color palettes: https://material.io/design/color/
-$WonByCheckMate-primary-light: mat.define-palette(mat.$indigo-palette);
-$WonByCheckMate-accent-light: mat.define-palette(mat.$light-blue-palette, A200, A100, A400);
+$WonByCheckmate-primary-light: mat.define-palette(mat.$indigo-palette);
+$WonByCheckmate-accent-light: mat.define-palette(mat.$light-blue-palette, A200, A100, A400);
 
 // The warn palette is optional (defaults to red).
-$WonByCheckMate-warn-light: mat.define-palette(mat.$red-palette);
+$WonByCheckmate-warn-light: mat.define-palette(mat.$red-palette);
 
 // Create the theme object. A theme consists of configurations for individual
 // theming systems such as "color" or "typography".
-$WonByCheckMate-theme-light: mat.define-light-theme((
+$WonByCheckmate-theme-light: mat.define-light-theme((
   color: (
-    primary: $WonByCheckMate-primary-light,
-    accent: $WonByCheckMate-accent-light,
-    warn: $WonByCheckMate-warn-light,
+    primary: $WonByCheckmate-primary-light,
+    accent: $WonByCheckmate-accent-light,
+    warn: $WonByCheckmate-warn-light,
   )
 ));
 
 // Dark theme
 // TODO: allow for custom colors like black for primary
-$WonByCheckMate-primary-dark: mat.define-palette(mat.$purple-palette);
-$WonByCheckMate-accent-dark: mat.define-palette(mat.$yellow-palette);
+$WonByCheckmate-primary-dark: mat.define-palette(mat.$purple-palette);
+$WonByCheckmate-accent-dark: mat.define-palette(mat.$yellow-palette);
 
-$WonByCheckMate-warn-dark: mat.define-palette(mat.$red-palette);
+$WonByCheckmate-warn-dark: mat.define-palette(mat.$red-palette);
 
-$WonByCheckMate-theme-dark: mat.define-dark-theme((
+$WonByCheckmate-theme-dark: mat.define-dark-theme((
   color: (
-    primary: $WonByCheckMate-primary-dark,
-    accent: $WonByCheckMate-accent-dark,
-    warn: $WonByCheckMate-warn-dark,
+    primary: $WonByCheckmate-primary-dark,
+    accent: $WonByCheckmate-accent-dark,
+    warn: $WonByCheckmate-warn-dark,
   )
 ));
 
 // Include theme styles for core and each component used in your app.
 // Alternatively, you can import and @include the theme mixins for each component
 // that you are using.
-@include mat.all-component-themes($WonByCheckMate-theme-light);
+@include mat.all-component-themes($WonByCheckmate-theme-light);
 
 
 // Avoid the same density styles being generated multiple times by only including the colors for one theme
 // https://github.com/angular/components/blob/master/guides/duplicate-theming-styles.md
 .dark-theme-mode {
-  @include mat.all-component-colors($WonByCheckMate-theme-dark);
+  @include mat.all-component-colors($WonByCheckmate-theme-dark);
 }
 
 /* You can add global styles to this file, and also import other style files */
